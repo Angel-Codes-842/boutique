@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: boutique-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: boutique
+      POSTGRES_PASSWORD: boutique
+      POSTGRES_DB: boutique
+    ports:
+      - "5432:5432"
+    volumes:
+      - boutique_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U boutique -d boutique"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ./boutique-app
+      dockerfile: Dockerfile
+    container_name: boutique-app
+    restart: unless-stopped
+    env_file:
+      - ./boutique-app/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./boutique-app:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  boutique_data:
