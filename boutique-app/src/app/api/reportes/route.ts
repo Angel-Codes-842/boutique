@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authorizeApiRequest } from "@/lib/auth/session";
 
@@ -14,6 +14,7 @@ function endOfDay(date: Date) {
 }
 
 export async function GET(req: NextRequest) {
+  await connection(); // request-time: evitar prerender/cache con Cache Components
   try {
     // Leer la cookie desde NextRequest evita el request-time API global
     // durante la prerenderización con Cache Components.

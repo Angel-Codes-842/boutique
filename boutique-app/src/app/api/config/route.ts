@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authorizeApiRequest } from "@/lib/auth/session";
 import { getFactpyPublicStatus } from "@/lib/factpy/config";
 
 export async function GET() {
+  await connection(); // request-time: evitar prerender/cache con Cache Components
   try {
     const authorization = await authorizeApiRequest();
     if ("response" in authorization) return authorization.response;

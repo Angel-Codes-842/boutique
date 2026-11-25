@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse, connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
+  await connection(); // request-time: evitar prerender/cache con Cache Components
   if (new URL(request.url).pathname !== "/api/health") {
     return NextResponse.json({ status: "not_found" }, { status: 404 });
   }

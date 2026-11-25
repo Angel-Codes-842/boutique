@@ -6,4 +6,6 @@ const globalForPrisma = globalThis as unknown as {
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient()
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+// En serverless (Vercel) cada instancia tiene su propio globalThis: cachear sin
+// importar NODE_ENV evita crear múltiples clients dentro de la misma instancia.
+globalForPrisma.prisma = prisma

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
@@ -12,15 +12,16 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "ts-node --transpile-only --compiler-options '{\"module\":\"CommonJS\",\"moduleResolution\":\"node10\"}' prisma/seed.ts",
-    "render-build": "prisma generate && next build",
+    "prisma:seed": "ts-node --transpile-only --project tsconfig.seed.json prisma/seed.ts",
+    "render-build": "npm run build",
     "postinstall": "node -e \"try{require.resolve('prisma');process.exit(1)}catch(e){process.exit(0)}\" || prisma generate"
   },
   "prisma": {
-    "seed": "ts-node --transpile-only --compiler-options '{\"module\":\"CommonJS\",\"moduleResolution\":\"node10\"}' prisma/seed.ts"
+    "seed": "ts-node --transpile-only --project tsconfig.seed.json prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0",
+    "@prisma/client": "^6.19.3",
+    "@tailwindcss/turbopack": "^4",
     "@tanstack/react-table": "^9.3.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
@@ -36,7 +37,6 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@tailwindcss/turbopack": "^4",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

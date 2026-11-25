@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, connection } from "next/server";
 import { authorizeApiRequest } from "@/lib/auth/session";
 import { getFactpyPublicStatus } from "@/lib/factpy/config";
 import { prisma } from "@/lib/prisma";
@@ -17,6 +17,7 @@ const TIPOS = [
 ] as const;
 
 export async function GET(req: NextRequest) {
+  await connection(); // request-time: evitar prerender/cache con Cache Components
   const autorizacion = await authorizeApiRequest();
   if ("response" in autorizacion) return autorizacion.response;
 

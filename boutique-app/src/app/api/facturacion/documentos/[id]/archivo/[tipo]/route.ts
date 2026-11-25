@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, connection } from "next/server";
 import { authorizeApiRequest } from "@/lib/auth/session";
 import { descargarArchivo } from "@/lib/factpy/service";
 
 export async function GET(_req: Request, ctx: { params: Promise<{ id: string; tipo: string }> }) {
+  await connection(); // request-time: evitar prerender/cache con Cache Components
   const autorizacion = await authorizeApiRequest();
   if ("response" in autorizacion) return autorizacion.response;
 

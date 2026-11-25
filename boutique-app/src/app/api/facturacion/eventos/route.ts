@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, connection } from "next/server";
 import { z } from "zod";
 import { authorizeApiRequest } from "@/lib/auth/session";
 import { crearEvento } from "@/lib/factpy/service";
@@ -21,6 +21,7 @@ const schema = z.object({
 });
 
 export async function GET() {
+  await connection(); // request-time: evitar prerender/cache con Cache Components
   const autorizacion = await authorizeApiRequest();
   if ("response" in autorizacion) return autorizacion.response;
   const eventos = await prisma.factpyEvent.findMany({
