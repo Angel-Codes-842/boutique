@@ -1,8 +1,12 @@
 node_modules
 .next
+out
+coverage
 .git
 .env
 .env.*
+!.env.example
 *.log
 README.md
-coverage
+*.tsbuildinfo
+.DS_Store

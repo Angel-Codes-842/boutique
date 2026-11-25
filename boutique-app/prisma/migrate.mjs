@@ -37,7 +37,7 @@ async function baselineExistingDatabase() {
       "migrate",
       "diff",
       "--from-url",
-      process.env.DATABASE_URL,
+      process.env.DIRECT_URL || process.env.DATABASE_URL,
       "--to-schema-datamodel",
       "prisma/schema.prisma",
       "--script",

@@ -46,4 +46,4 @@ COPY --from=builder --chown=nextjs:nextjs /app/src/lib/auth/password.ts ./src/li
 USER nextjs
 
 EXPOSE 3000
-CMD ["sh", "-c", "if [ -z \"$SESSION_SECRET\" ] || [ ${#SESSION_SECRET} -lt 32 ] || [ \"$SESSION_SECRET\" = \"replace-with-a-random-secret\" ]; then echo 'Set a strong SESSION_SECRET (>=32 chars) in environment variables' >&2; exit 1; fi; exec npm run start"]
+CMD ["sh", "-c", "if [ -z \"$SESSION_SECRET\" ] || [ ${#SESSION_SECRET} -lt 32 ] || [ \"$SESSION_SECRET\" = \"replace-with-a-random-secret\" ]; then echo 'Set a strong SESSION_SECRET (>=32 chars) in environment variables' >&2; exit 1; fi; node prisma/migrate.mjs && exec npm run start"]
