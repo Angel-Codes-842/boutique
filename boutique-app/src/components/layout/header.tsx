@@ -47,7 +47,7 @@ export function Header() {
         <button
           type="button"
           onClick={toggleMenu}
-          className="rounded-md p-2 text-slate-700 hover:bg-slate-50 lg:hidden"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-700 hover:bg-slate-50 lg:hidden"
           aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
           aria-expanded={menuOpen}
         >
@@ -56,7 +56,7 @@ export function Header() {
         <h2 className="truncate text-sm font-medium text-slate-900 lg:text-sm">{title}</h2>
       </div>
       <div className="flex items-center gap-1 lg:gap-3">
-        <div className="flex items-center gap-2 rounded-md px-2 py-1.5 bg-[var(--primary-50)] lg:px-3">
+        <div className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md bg-[var(--primary-50)] px-2 lg:px-3">
           <User className="h-4 w-4 text-[var(--primary-600)]" />
           <span className="hidden text-sm font-medium text-[var(--primary-700)] sm:inline">
             {user?.name || "Usuario"}
@@ -65,7 +65,7 @@ export function Header() {
         <button
           type="button"
           onClick={() => setPasswordDialogOpen(true)}
-          className="rounded-md p-2 text-slate-600 hover:bg-slate-50"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-50"
           title="Cambiar contraseña"
           aria-label="Cambiar contraseña"
         >
@@ -74,20 +74,21 @@ export function Header() {
         <button
           type="button"
           onClick={logout}
-          className="rounded-md p-2 text-slate-600 hover:bg-slate-50"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-50"
           title="Cerrar sesión"
+          aria-label="Cerrar sesión"
         >
           <LogOut className="h-5 w-5" />
         </button>
       </div>
     </header>
     {passwordDialogOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-        <form onSubmit={changePassword} className="w-full max-w-md space-y-4 rounded-lg bg-white p-6 shadow-xl">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-900">Cambiar contraseña</h2>
-            <button type="button" onClick={() => setPasswordDialogOpen(false)} aria-label="Cerrar">
-              <X className="h-5 w-5 text-slate-500" />
+      <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+        <form onSubmit={changePassword} className="max-h-[90dvh] w-full space-y-4 overflow-y-auto rounded-t-2xl bg-white p-4 shadow-xl sm:max-w-md sm:rounded-2xl sm:p-6">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="min-w-0 truncate text-lg font-semibold text-slate-900">Cambiar contraseña</h2>
+            <button type="button" onClick={() => setPasswordDialogOpen(false)} aria-label="Cerrar" className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100">
+              <X className="h-5 w-5" />
             </button>
           </div>
           <label className="block text-sm font-medium text-slate-700">
@@ -98,7 +99,7 @@ export function Header() {
               required
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"
+              className="mt-1 min-h-11 w-full rounded-md border border-slate-300 px-3"
             />
           </label>
           <label className="block text-sm font-medium text-slate-700">
@@ -111,10 +112,10 @@ export function Header() {
               required
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"
+              className="mt-1 min-h-11 w-full rounded-md border border-slate-300 px-3"
             />
           </label>
-          <button type="submit" className="w-full rounded-md bg-[var(--primary-600)] px-4 py-2 font-medium text-white">
+          <button type="submit" className="min-h-11 w-full rounded-md bg-[var(--primary-600)] px-4 font-medium text-white">
             Guardar contraseña
           </button>
         </form>

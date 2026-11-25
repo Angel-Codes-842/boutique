@@ -132,7 +132,7 @@ export default function VentasPage() {
     const html = `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>${esFactura ? "Factura" : "Ticket"} ${venta.number}</title>
 <style>
-${esFactura ? "@page { size: A4; margin: 15mm; } body{font-family:Arial,sans-serif;font-size:11px;margin:0;padding:0}" : "@page { size: 80mm auto; margin: 0; } body{font-family:monospace;font-size:11px;width:72mm;margin:0;padding:4mm}"}
+${esFactura ? "@page { size: A4; margin: 15mm; } body{font-family:monospace;font-size:11px;margin:0;padding:0}" : "@page { size: 80mm auto; margin: 0; } body{font-family:monospace;font-size:11px;width:72mm;margin:0;padding:4mm}"}
 h2{text-align:center;margin:3px 0;font-size:13px}
 p{margin:1px 0}
 hr{border:none;border-top:1px dashed #000;margin:6px 0}
@@ -269,35 +269,35 @@ ${venta.discount > 0 ? `<p style="display:flex;justify-content:space-between"><s
         </div>
 
         <div className="grid gap-2 sm:gap-3 lg:gap-4 grid-cols-1 sm:grid-cols-3 mb-4 lg:mb-6">
-          <div className="bg-white rounded-lg border border-slate-200 p-3 sm:p-4 lg:p-6">
+          <div className="min-w-0 bg-white rounded-lg border border-slate-200 p-3 sm:p-4 lg:p-6">
             <p className="text-sm text-slate-500">Total (no anuladas)</p>
-            <p className="text-xl sm:text-2xl font-semibold text-slate-900 mt-1">{formatGuarani(totalHoy)}</p>
+            <p className="truncate text-xl sm:text-2xl font-semibold text-slate-900 mt-1">{formatGuarani(totalHoy)}</p>
           </div>
-          <div className="bg-white rounded-lg border border-slate-200 p-3 sm:p-4 lg:p-6">
+          <div className="min-w-0 bg-white rounded-lg border border-slate-200 p-3 sm:p-4 lg:p-6">
             <p className="text-sm text-slate-500">Cantidad (no anuladas)</p>
-            <p className="text-xl sm:text-2xl font-semibold text-slate-900 mt-1">{cantidad}</p>
+            <p className="truncate text-xl sm:text-2xl font-semibold text-slate-900 mt-1">{cantidad}</p>
           </div>
-          <div className="bg-white rounded-lg border border-slate-200 p-3 sm:p-4 lg:p-6">
+          <div className="min-w-0 bg-white rounded-lg border border-slate-200 p-3 sm:p-4 lg:p-6">
             <p className="text-sm text-slate-500">Ticket Promedio</p>
-            <p className="text-xl sm:text-2xl font-semibold text-slate-900 mt-1">{formatGuarani(cantidad > 0 ? Math.round(totalHoy / cantidad) : 0)}</p>
+            <p className="truncate text-xl sm:text-2xl font-semibold text-slate-900 mt-1">{formatGuarani(cantidad > 0 ? Math.round(totalHoy / cantidad) : 0)}</p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-slate-200 mb-4 lg:mb-6">
-          <div className="p-3 sm:p-4 flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-slate-500" />
+          <div className="p-3 sm:p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <div className="flex w-full items-center gap-2 sm:w-auto">
+              <Calendar className="h-4 w-4 shrink-0 text-slate-500" />
               <input
                 type="date"
                 value={fechaFiltro}
                 onChange={(e) => setFechaFiltro(e.target.value)}
-                className="w-full sm:w-auto rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]"
+                className="min-h-11 min-w-0 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)] sm:w-auto"
               />
             </div>
             <select
               value={metodoFiltro}
               onChange={(e) => setMetodoFiltro(e.target.value)}
-              className="w-full sm:w-auto rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]"
+              className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)] sm:w-auto"
             >
               <option value="">Todas las formas de pago</option>
               <option value="EFECTIVO">Efectivo</option>
@@ -310,10 +310,10 @@ ${venta.discount > 0 ? `<p style="display:flex;justify-content:space-between"><s
               placeholder="Buscar por N° ticket..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="w-full sm:w-auto rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]"
+              className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)] sm:w-auto"
             />
             {(fechaFiltro || metodoFiltro || busqueda) && (
-              <button onClick={() => { setFechaFiltro(""); setMetodoFiltro(""); setBusqueda(""); }} className="text-sm text-slate-600 hover:text-slate-900">
+              <button onClick={() => { setFechaFiltro(""); setMetodoFiltro(""); setBusqueda(""); }} className="min-h-11 text-left text-sm text-slate-600 hover:text-slate-900">
                 Limpiar filtros
               </button>
             )}
@@ -340,23 +340,23 @@ ${venta.discount > 0 ? `<p style="display:flex;justify-content:space-between"><s
                     <span className="text-sm font-mono font-medium text-slate-900">{venta.number}</span>
                     <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${venta.status === "ANULADA" ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}>{venta.status}</span>
                   </div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-slate-500">{new Date(venta.createdAt).toLocaleString("es-PY")}</span>
-                    <span className="text-sm font-semibold text-slate-900">{formatGuarani(venta.total)}</span>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="min-w-0 truncate text-xs text-slate-500">{new Date(venta.createdAt).toLocaleString("es-PY")}</span>
+                    <span className="shrink-0 text-sm font-semibold text-slate-900">{formatGuarani(venta.total)}</span>
                   </div>
-                  <div className="text-xs text-slate-500 mb-2">
+                  <div className="mb-2 truncate text-xs text-slate-500">
                     {venta.customer?.name || "Sin cliente"} · {venta.paymentMethod}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <button onClick={() => reimprimirTicket(venta)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100" title="Reimprimir">
-                      <Printer className="h-3.5 w-3.5" />
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => reimprimirTicket(venta)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-slate-600 hover:bg-slate-100" title="Reimprimir" aria-label="Reimprimir ticket">
+                      <Printer className="h-4 w-4" />
                     </button>
-                    <button onClick={() => setVentaDetalle(venta)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100" title="Ver detalle">
-                      <Eye className="h-3.5 w-3.5" />
+                    <button onClick={() => setVentaDetalle(venta)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-slate-600 hover:bg-slate-100" title="Ver detalle" aria-label="Ver detalle">
+                      <Eye className="h-4 w-4" />
                     </button>
                     {venta.status !== "ANULADA" && currentUser?.role === "ADMIN" && (
-                      <button onClick={() => abrirAnular(venta)} className="rounded-md p-1.5 text-red-600 hover:bg-red-50" title="Anular">
-                        <XCircle className="h-3.5 w-3.5" />
+                      <button onClick={() => abrirAnular(venta)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-red-600 hover:bg-red-50" title="Anular" aria-label="Anular venta">
+                        <XCircle className="h-4 w-4" />
                       </button>
                     )}
                   </div>
@@ -428,48 +428,66 @@ ${venta.discount > 0 ? `<p style="display:flex;justify-content:space-between"><s
       </div>
 
       {ventaDetalle && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-              <h2 className="text-lg font-medium text-slate-900">Detalle de Venta {ventaDetalle.number}</h2>
-              <button onClick={() => setVentaDetalle(null)} className="rounded-md p-1 text-slate-400 hover:bg-slate-100"><XCircle className="h-5 w-5" /></button>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="w-full max-w-2xl rounded-t-2xl bg-white p-4 sm:rounded-2xl sm:p-6 max-h-[90dvh] overflow-y-auto">
+            <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+              <h2 className="min-w-0 break-words text-lg font-medium text-slate-900">Detalle de Venta {ventaDetalle.number}</h2>
+              <button onClick={() => setVentaDetalle(null)} aria-label="Cerrar" className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md p-1 text-slate-400 hover:bg-slate-100"><XCircle className="h-5 w-5" /></button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-slate-500">Fecha:</span> <span className="text-slate-900">{new Date(ventaDetalle.createdAt).toLocaleString("es-PY")}</span></div>
-                <div><span className="text-slate-500">Cajero:</span> <span className="text-slate-900">{ventaDetalle.user?.name || "-"}</span></div>
-                <div><span className="text-slate-500">Cliente:</span> <span className="text-slate-900">{ventaDetalle.customer?.name || "Sin cliente"}</span></div>
-                <div><span className="text-slate-500">Forma de pago:</span> <span className="text-slate-900">{ventaDetalle.paymentMethod}</span></div>
-                <div><span className="text-slate-500">Estado:</span> <span className={ventaDetalle.status === "ANULADA" ? "text-red-600" : "text-green-600"}>{ventaDetalle.status}</span></div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-4">
+                <div className="min-w-0 break-words"><span className="text-slate-500">Fecha:</span> <span className="text-slate-900">{new Date(ventaDetalle.createdAt).toLocaleString("es-PY")}</span></div>
+                <div className="min-w-0 break-words"><span className="text-slate-500">Cajero:</span> <span className="text-slate-900">{ventaDetalle.user?.name || "-"}</span></div>
+                <div className="min-w-0 break-words"><span className="text-slate-500">Cliente:</span> <span className="text-slate-900">{ventaDetalle.customer?.name || "Sin cliente"}</span></div>
+                <div className="min-w-0 break-words"><span className="text-slate-500">Forma de pago:</span> <span className="text-slate-900">{ventaDetalle.paymentMethod}</span></div>
+                <div className="min-w-0 break-words"><span className="text-slate-500">Estado:</span> <span className={ventaDetalle.status === "ANULADA" ? "text-red-600" : "text-green-600"}>{ventaDetalle.status}</span></div>
               </div>
               <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      <th className="text-left px-4 py-2 text-xs font-medium text-slate-500">Producto</th>
-                      <th className="text-center px-4 py-2 text-xs font-medium text-slate-500">Cant.</th>
-                      <th className="text-right px-4 py-2 text-xs font-medium text-slate-500">P.Unit</th>
-                      <th className="text-right px-4 py-2 text-xs font-medium text-slate-500">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    {ventaDetalle.items?.map((item: any, idx: number) => (
-                      <tr key={idx}>
-                        <td className="px-4 py-2 text-sm text-slate-900">{item.product?.name || "-"}</td>
-                        <td className="px-4 py-2 text-sm text-slate-600 text-center">{item.quantity}</td>
-                        <td className="px-4 py-2 text-sm text-slate-600 text-right">{formatGuarani(item.unitPrice)}</td>
-                        <td className="px-4 py-2 text-sm text-slate-900 text-right">{formatGuarani(item.total)}</td>
+                {/* Vista móvil */}
+                <div className="sm:hidden divide-y divide-slate-200">
+                  {ventaDetalle.items?.map((item: any, idx: number) => (
+                    <div key={idx} className="p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <span className="min-w-0 break-words text-sm font-medium text-slate-900">{item.product?.name || "-"}</span>
+                        <span className="shrink-0 text-sm font-semibold text-slate-900">{formatGuarani(item.total)}</span>
+                      </div>
+                      <div className="mt-1 flex justify-between gap-3 text-xs text-slate-500">
+                        <span>Cant.: {item.quantity}</span>
+                        <span className="shrink-0">P.Unit: {formatGuarani(item.unitPrice)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Vista desktop */}
+                <div className="hidden sm:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="text-left px-4 py-2 text-xs font-medium text-slate-500">Producto</th>
+                        <th className="text-center px-4 py-2 text-xs font-medium text-slate-500">Cant.</th>
+                        <th className="text-right px-4 py-2 text-xs font-medium text-slate-500">P.Unit</th>
+                        <th className="text-right px-4 py-2 text-xs font-medium text-slate-500">Total</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {ventaDetalle.items?.map((item: any, idx: number) => (
+                        <tr key={idx}>
+                          <td className="px-4 py-2 text-sm text-slate-900">{item.product?.name || "-"}</td>
+                          <td className="px-4 py-2 text-sm text-slate-600 text-center">{item.quantity}</td>
+                          <td className="px-4 py-2 text-sm text-slate-600 text-right">{formatGuarani(item.unitPrice)}</td>
+                          <td className="px-4 py-2 text-sm text-slate-900 text-right">{formatGuarani(item.total)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
               <div className="space-y-2 text-sm border-t border-slate-200 pt-4">
-                <div className="flex justify-between"><span className="text-slate-500">Subtotal</span><span className="text-slate-900">{formatGuarani(ventaDetalle.subtotal)}</span></div>
-                <div className="flex justify-between"><span className="text-slate-500">Descuento</span><span className="text-slate-900">{formatGuarani(ventaDetalle.discount)}</span></div>
-                <div className="flex justify-between font-medium text-base"><span className="text-slate-900">Total</span><span className="text-slate-900">{formatGuarani(ventaDetalle.total)}</span></div>
-                <div className="flex justify-between"><span className="text-slate-500">Pagado</span><span className="text-slate-900">{formatGuarani(ventaDetalle.paidAmount)}</span></div>
-                <div className="flex justify-between"><span className="text-slate-500">Vuelto</span><span className="text-slate-900">{formatGuarani(ventaDetalle.changeAmount)}</span></div>
+                <div className="flex items-start justify-between gap-2"><span className="min-w-0 text-slate-500">Subtotal</span><span className="shrink-0 text-slate-900">{formatGuarani(ventaDetalle.subtotal)}</span></div>
+                <div className="flex items-start justify-between gap-2"><span className="min-w-0 text-slate-500">Descuento</span><span className="shrink-0 text-slate-900">{formatGuarani(ventaDetalle.discount)}</span></div>
+                <div className="flex items-start justify-between gap-2 font-medium text-base"><span className="min-w-0 text-slate-900">Total</span><span className="shrink-0 text-slate-900">{formatGuarani(ventaDetalle.total)}</span></div>
+                <div className="flex items-start justify-between gap-2"><span className="min-w-0 text-slate-500">Pagado</span><span className="shrink-0 text-slate-900">{formatGuarani(ventaDetalle.paidAmount)}</span></div>
+                <div className="flex items-start justify-between gap-2"><span className="min-w-0 text-slate-500">Vuelto</span><span className="shrink-0 text-slate-900">{formatGuarani(ventaDetalle.changeAmount)}</span></div>
               </div>
             </div>
           </div>
@@ -477,25 +495,25 @@ ${venta.discount > 0 ? `<p style="display:flex;justify-content:space-between"><s
       )}
 
       {showAnular && ventaAAnular && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="w-full max-w-lg rounded-t-2xl bg-white p-4 sm:rounded-2xl sm:p-6 max-h-[90dvh] overflow-y-auto">
+            <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
               <h2 className="text-lg font-medium text-slate-900">Anular Venta</h2>
-              <button onClick={() => setShowAnular(false)} className="rounded-md p-1 text-slate-400 hover:bg-slate-100"><XCircle className="h-5 w-5" /></button>
+              <button onClick={() => setShowAnular(false)} aria-label="Cerrar" className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-1 text-slate-400 hover:bg-slate-100"><XCircle className="h-5 w-5" /></button>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="space-y-4">
               <p className="text-sm text-slate-600">¿Está seguro de anular la venta <strong>{ventaAAnular.number}</strong>? Se devolverá el stock al inventario.</p>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Usuario Administrador</label>
-                <select value={adminUserId} onChange={(e) => setAdminUserId(e.target.value)} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]">
+                <select value={adminUserId} onChange={(e) => setAdminUserId(e.target.value)} className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]">
                   <option value="">Seleccionar...</option>
                   {usuarios.filter(u => u.role === "ADMIN").map(u => <option key={u.id} value={u.id}>{u.name} ({u.role})</option>)}
                 </select>
               </div>
             </div>
-            <div className="flex gap-2 px-6 py-4 border-t border-slate-200">
-              <button onClick={() => setShowAnular(false)} className="flex-1 rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
-              <button onClick={confirmarAnular} className="flex-1 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Anular</button>
+            <div className="mt-4 flex gap-2 border-t border-slate-200 pt-3">
+              <button onClick={() => setShowAnular(false)} className="min-h-11 flex-1 rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
+              <button onClick={confirmarAnular} className="min-h-11 flex-1 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Anular</button>
             </div>
           </div>
         </div>

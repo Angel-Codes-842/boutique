@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { OfflineBanner } from "@/components/offline-banner";
+import { PwaRegister } from "@/components/pwa-register";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,9 +33,8 @@ export const viewport: Viewport = {
   themeColor: "#0f172a",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
+  // No bloquear el zoom: es un requisito de accesibilidad.
 };
 
 export default function RootLayout({
@@ -45,11 +46,13 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icon-180.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PwaRegister />
+        <OfflineBanner />
         {children}
         <Toaster position="top-right" richColors />
       </body>

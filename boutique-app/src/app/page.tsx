@@ -25,7 +25,7 @@ export default function Home() {
             <Link
               key={module.name}
               href={module.href}
-              className="bg-white rounded-lg border p-4 lg:p-6 active:bg-slate-50 hover:border-[var(--primary-200)] transition-colors"
+              className="min-h-11 bg-white rounded-lg border p-4 lg:p-6 active:bg-slate-50 hover:border-[var(--primary-200)] transition-colors"
               style={{ borderColor: "var(--primary-100)" }}
             >
               <div className="flex items-start gap-3 lg:gap-4">

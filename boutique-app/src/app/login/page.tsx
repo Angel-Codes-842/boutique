@@ -37,15 +37,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-6">
       <Toaster position="top-right" />
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
-          <div className="px-6 py-8 text-center">
+          <div className="px-4 py-8 text-center sm:px-6">
             <h1 className="text-2xl font-semibold text-[var(--primary-600)]">Boutique POS</h1>
             <p className="text-sm text-slate-500 mt-1">Sistema de Facturación</p>
           </div>
-          <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 px-4 pb-6 sm:px-6">
             <div aria-hidden="true" className="hidden">
               <label htmlFor="website">No completar</label>
               <input
@@ -64,7 +64,7 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]"
+                className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]"
                 placeholder="admin"
               />
             </div>
@@ -75,14 +75,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]"
+                className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]"
                 placeholder="••••••••"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 rounded-md bg-[var(--primary-600)] px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+              className="min-h-11 w-full flex items-center justify-center gap-2 rounded-md bg-[var(--primary-600)] px-4 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
             >
               <LogIn className="h-4 w-4" />
               {loading ? "Ingresando..." : "Iniciar Sesión"}

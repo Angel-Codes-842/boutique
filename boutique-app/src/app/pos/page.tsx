@@ -214,7 +214,7 @@ export default function POSPage() {
     const html = `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>${esFactura ? "Factura" : "Ticket"} ${nro}</title>
 <style>
-${esFactura ? "@page { size: A4; margin: 15mm; } body{font-family:Arial,sans-serif;font-size:11px;margin:0;padding:0}" : "@page { size: 80mm auto; margin: 0; } body{font-family:monospace;font-size:11px;width:72mm;margin:0;padding:4mm}"}
+${esFactura ? "@page { size: A4; margin: 15mm; } body{font-family:monospace;font-size:11px;margin:0;padding:0}" : "@page { size: 80mm auto; margin: 0; } body{font-family:monospace;font-size:11px;width:72mm;margin:0;padding:4mm}"}
 h2{margin:3px 0;font-size:13px} p{margin:1px 0} hr{border:none;border-top:1px dashed #000;margin:6px 0}
 table{width:100%;border-collapse:collapse;margin:6px 0} th,td{padding:2px;font-size:10px} .total{font-weight:bold;font-size:12px}
 </style></head><body>
@@ -387,21 +387,22 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
     <AppShell>
       <div className="h-full overflow-auto p-2 sm:p-3 lg:p-4">
           {cajaAbierta === false && (
-            <div className="mb-4 p-4 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-between">
-              <div>
+            <div className="mb-4 p-3 sm:p-4 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-amber-800">No hay caja abierta</p>
                 <p className="text-xs text-amber-700">Debe abrir la caja para poder realizar ventas</p>
               </div>
-              <a href="/caja" className="px-3 py-1.5 text-sm rounded-md bg-amber-600 text-white hover:bg-amber-700">Ir a Caja</a>
+              <a href="/caja" className="inline-flex min-h-11 shrink-0 items-center rounded-md bg-amber-600 px-3 text-sm font-medium text-white hover:bg-amber-700">Ir a Caja</a>
             </div>
           )}
-          <div className="mb-3 lg:mb-4 flex items-center justify-between">
+          <div className="mb-3 lg:mb-4 flex items-center justify-between gap-2">
             <h1 className="hidden text-xl font-semibold text-slate-900 lg:block">Punto de Venta</h1>
-            <div className="flex items-center gap-1.5 lg:gap-2">
+            <div className="flex min-w-0 items-center gap-1.5 lg:gap-2">
               <select
                 value={tipoComprobante}
                 onChange={(e) => setTipoComprobante(e.target.value as "TICKET" | "FACTURA")}
-                className="rounded-md border border-slate-300 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm focus:outline-none focus:ring-1"
+                aria-label="Tipo de comprobante"
+                className="min-h-11 min-w-0 rounded-md border border-slate-300 px-2 lg:px-3 text-xs lg:text-sm focus:outline-none focus:ring-1"
                 style={{ "--tw-ring-color": "var(--primary-600)" } as any}
               >
                 <option value="TICKET">Ticket</option>
@@ -409,7 +410,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
               </select>
               <button
                 onClick={() => setShowBuscar(true)}
-                className="hidden lg:inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="hidden min-h-11 lg:inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 title="F2 o Ctrl+K"
               >
                 <Search className="h-4 w-4" />
@@ -417,16 +418,18 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
               </button>
               <button
                 onClick={nuevaVenta}
-                className="inline-flex items-center gap-1 lg:gap-2 rounded-md border border-slate-300 px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm font-medium text-slate-700 hover:bg-slate-50"
+                aria-label="Nueva venta"
+                title="Nueva venta"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1 lg:gap-2 rounded-md border border-slate-300 px-2 lg:px-3 text-xs lg:text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
-                <Plus className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
+                <Plus className="h-4 w-4 shrink-0" />
                 <span className="hidden sm:inline">Nueva venta</span>
               </button>
-              <button onClick={imprimirYGuardar} className="hidden lg:inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+              <button onClick={imprimirYGuardar} className="hidden min-h-11 lg:inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 text-sm font-medium text-slate-700 hover:bg-slate-50">
                 <Save className="h-4 w-4" />
                 Guardar
               </button>
-              <button onClick={imprimirYGuardar} className="hidden lg:inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+              <button onClick={imprimirYGuardar} className="hidden min-h-11 lg:inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 text-sm font-medium text-slate-700 hover:bg-slate-50">
                 <Printer className="h-4 w-4" />
                 Imprimir y guardar
               </button>
@@ -434,19 +437,19 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
           </div>
 
           <div className="mb-3 lg:mb-4 flex items-center gap-2 lg:gap-3">
-            <form onSubmit={agregarPorCodigo} className="flex flex-1 gap-2">
+            <form onSubmit={agregarPorCodigo} className="flex min-w-0 flex-1 gap-2">
               <input
                 id="codigo-producto"
                 type="text"
                 value={codigo}
                 onChange={(e) => setCodigo(e.target.value)}
                 placeholder="Código / buscar rápido... ( / para enfocar )"
-                className="flex-1 rounded-md border border-slate-300 px-2 lg:px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                className="min-h-11 min-w-0 flex-1 rounded-md border border-slate-300 px-2 lg:px-3 text-sm focus:outline-none focus:ring-1"
                 style={{ "--tw-ring-color": "var(--primary-600)" } as any}
               />
               <button
                 type="submit"
-                className="rounded-md px-3 lg:px-4 py-2 text-sm font-medium text-white"
+                className="min-h-11 shrink-0 rounded-md px-3 lg:px-4 text-sm font-medium text-white"
                 style={{ backgroundColor: "var(--primary-600)" }}
               >
                 Agregar
@@ -454,14 +457,16 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
             </form>
             <button
               onClick={() => setShowCliente(true)}
-              className="inline-flex items-center gap-1.5 lg:gap-2 rounded-md border border-slate-300 px-2 lg:px-3 py-2 text-xs lg:text-sm font-medium text-slate-700 hover:bg-slate-50 max-w-[140px] lg:max-w-none truncate"
+              title={clienteSeleccionado ? clienteSeleccionado.name : "Sin cliente"}
+              className="inline-flex min-h-11 min-w-0 max-w-[130px] flex-shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2 sm:max-w-[180px] lg:max-w-none lg:gap-2 lg:px-3 text-xs lg:text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
-              <User className="h-3.5 w-3.5 lg:h-4 lg:w-4 flex-shrink-0" />
-              <span className="truncate">{clienteSeleccionado ? clienteSeleccionado.name : "Sin cliente"}</span>
+              <User className="h-4 w-4 flex-shrink-0" />
+              <span className="min-w-0 truncate" title={clienteSeleccionado ? clienteSeleccionado.name : "Sin cliente"}>{clienteSeleccionado ? clienteSeleccionado.name : "Sin cliente"}</span>
             </button>
             <button
               onClick={() => setShowBuscar(true)}
-              className="lg:hidden inline-flex items-center justify-center rounded-md border border-slate-300 p-2 text-slate-700 hover:bg-slate-50"
+              aria-label="Buscar producto"
+              className="lg:hidden inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
             >
               <Search className="h-4 w-4" />
             </button>
@@ -476,7 +481,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
               <button
                 key={key}
                 onClick={() => setMobileTab(key as "carrito" | "productos" | "cobro")}
-                className={`rounded-md px-2 py-2 text-xs font-medium ${mobileTab === key ? "bg-white text-slate-900 shadow-sm" : "text-slate-600"}`}
+                className={`min-h-11 min-w-0 rounded-md px-1 text-xs font-medium ${mobileTab === key ? "bg-white text-slate-900 shadow-sm" : "text-slate-600"}`}
               >
                 {label}
               </button>
@@ -486,16 +491,16 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
           <div className="lg:grid lg:grid-cols-3 lg:gap-4">
             <div className={`flex flex-col gap-4 lg:col-span-2 ${mobileTab === "cobro" ? "hidden lg:flex" : ""}`}>
               <div className={`bg-white rounded-lg border border-slate-200 overflow-hidden ${mobileTab !== "carrito" ? "hidden lg:block" : ""}`}>
-                <div className="px-3 lg:px-4 py-2 lg:py-3 border-b border-slate-200 flex items-center justify-between">
-                  <h2 className="text-sm font-medium text-slate-900">Carrito ({cart.length})</h2>
+                <div className="px-3 lg:px-4 py-2 lg:py-3 border-b border-slate-200 flex items-center justify-between gap-2">
+                  <h2 className="min-w-0 truncate text-sm font-medium text-slate-900">Carrito ({cart.length})</h2>
                   <button
                     onClick={() => setShowBuscar(true)}
-                    className="text-xs text-slate-600 hover:text-slate-900"
+                    className="min-h-11 min-w-11 shrink-0 text-xs text-slate-600 hover:text-slate-900"
                   >
-                    Agregar más (F2)
+                    Agregar más
                   </button>
                 </div>
-                <div className="overflow-auto max-h-[calc(100dvh-340px)] lg:max-h-[calc(100vh-320px)]">
+                <div className="min-h-[180px] overflow-auto max-h-[calc(100dvh-340px)] lg:max-h-[calc(100vh-320px)]">
                   <div className="lg:hidden divide-y divide-slate-200">
                     {cart.length === 0 ? (
                       <div className="px-4 py-8 text-center text-sm text-slate-500">
@@ -509,10 +514,10 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                             <div className="text-sm font-medium text-slate-900 truncate">{item.product.name}</div>
                             <div className="text-xs text-slate-500 mb-2">{formatGuarani(item.product.price)}</div>
                             <div className="flex items-center gap-2">
-                              <button onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))} className="w-7 h-7 rounded-md border border-slate-300 flex items-center justify-center">-</button>
+                              <button onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))} aria-label={`Quitar una unidad de ${item.product.name}`} className="min-h-11 min-w-11 rounded-md border border-slate-300 flex items-center justify-center">-</button>
                               <span className="w-8 text-center text-sm">{item.quantity}</span>
-                              <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-7 h-7 rounded-md border border-slate-300 flex items-center justify-center">+</button>
-                              <button onClick={() => removeFromCart(item.product.id)} className="ml-auto text-red-600 p-1"><Trash2 className="h-4 w-4" /></button>
+                              <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} aria-label={`Agregar una unidad de ${item.product.name}`} className="min-h-11 min-w-11 rounded-md border border-slate-300 flex items-center justify-center">+</button>
+                              <button onClick={() => removeFromCart(item.product.id)} aria-label={`Eliminar ${item.product.name} del carrito`} className="ml-auto min-h-11 min-w-11 flex items-center justify-center rounded-md text-red-600"><Trash2 className="h-4 w-4" /></button>
                             </div>
                           </div>
                           <div className="text-sm font-semibold text-slate-900">{formatGuarani(item.product.price * item.quantity)}</div>
@@ -552,7 +557,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                                     type="number"
                                     value={item.quantity}
                                     onChange={(e) => updateQuantity(item.product.id, Number(e.target.value))}
-                                    className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm text-center focus:outline-none focus:ring-1"
+                                    className="min-h-11 w-16 rounded-md border border-slate-300 px-2 text-sm text-center focus:outline-none focus:ring-1"
                                     style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                                     min="1"
                                   />
@@ -560,7 +565,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                               </td>
                               <td className="px-4 py-2 text-sm font-medium text-slate-900 text-right">{formatGuarani(item.product.price * item.quantity)}</td>
                               <td className="px-4 py-2 text-right">
-                                <button onClick={() => removeFromCart(item.product.id)} className="rounded-md p-1 text-slate-600 hover:bg-slate-100 hover:text-red-600">
+                                <button onClick={() => removeFromCart(item.product.id)} aria-label={`Eliminar ${item.product.name} del carrito`} className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-red-600">
                                   <Trash2 className="h-4 w-4" />
                                 </button>
                               </td>
@@ -574,20 +579,20 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
               </div>
 
               <div id="productos-pos" className={`bg-white rounded-lg border border-slate-200 overflow-hidden ${mobileTab !== "productos" ? "hidden lg:block" : ""}`}>
-                <div className="px-3 lg:px-4 py-2 lg:py-3 border-b border-slate-200 flex items-center justify-between">
+                <div className="px-3 lg:px-4 py-2 lg:py-3 border-b border-slate-200 flex items-center justify-between gap-2">
                   <h2 className="text-sm font-medium text-slate-900">Productos</h2>
-                  <button onClick={() => setShowBuscar(true)} className="lg:hidden inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-900">
-                    <Search className="h-3.5 w-3.5" />
+                  <button onClick={() => setShowBuscar(true)} aria-label="Buscar producto" className="lg:hidden inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-slate-900">
+                    <Search className="h-4 w-4" />
                     Buscar
                   </button>
                 </div>
-                <div className="p-2 lg:p-3 max-h-[calc(100dvh-340px)] lg:max-h-[calc(100vh-320px)] overflow-auto">
+                <div className="min-h-[180px] p-2 lg:p-3 max-h-[calc(100dvh-340px)] lg:max-h-[calc(100vh-320px)] overflow-auto">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                     {productos.slice(0, 80).map((prod) => (
                       <button
                         key={prod.id}
                         onClick={() => addToCart(prod)}
-                        className="p-2 lg:p-3 rounded-lg border border-slate-200 hover:border-[var(--primary-600)] hover:bg-slate-50 text-left transition-colors active:scale-[0.98]"
+                        className="min-h-11 min-w-0 p-2 lg:p-3 rounded-lg border border-slate-200 hover:border-[var(--primary-600)] hover:bg-slate-50 text-left transition-colors active:scale-[0.98]"
                       >
                         <div className="text-xs lg:text-sm font-medium text-slate-900 line-clamp-2 mb-1">{prod.name}</div>
                         <div className="text-[10px] lg:text-xs text-slate-500 font-mono mb-1 truncate">{prod.code}</div>
@@ -619,7 +624,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                           value={descuento}
                           onChange={(e) => setDescuento(e.target.value)}
                           placeholder="0"
-                          className="w-24 rounded-md border border-slate-300 px-2 py-1 text-sm text-right focus:outline-none focus:ring-1"
+                          className="min-h-11 w-24 rounded-md border border-slate-300 px-2 text-sm text-right focus:outline-none focus:ring-1"
                           style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                         />
                       </div>
@@ -635,7 +640,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                     <select
                       value={metodoPago}
                       onChange={(e) => setMetodoPago(e.target.value)}
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                      className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1"
                       style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                     >
                       <option value="EFECTIVO">Efectivo</option>
@@ -656,7 +661,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                           value={montoRecibido}
                           onChange={(e) => setMontoRecibido(e.target.value)}
                           placeholder="0"
-                          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                          className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1"
                           style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                         />
                       </div>
@@ -678,7 +683,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                   <button
                     onClick={cobrar}
                     disabled={cart.length === 0 || procesando}
-                    className="w-full rounded-md px-4 py-3 text-sm font-medium text-white disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
+                    className="min-h-11 w-full rounded-md px-4 py-3 text-sm font-medium text-white disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
                     style={{ backgroundColor: cart.length === 0 ? undefined : "var(--primary-600)" }}
                   >
                     {procesando ? "Procesando..." : "Cobrar"}
@@ -690,18 +695,18 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
       </div>
 
       {showBuscar && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[85vh] flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
-              <div>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-white sm:max-w-3xl sm:rounded-2xl">
+            <div className="flex shrink-0 items-start justify-between gap-2 border-b border-slate-200 px-4 py-3">
+              <div className="min-w-0">
                 <h2 className="font-medium text-slate-900">Productos</h2>
                 <p className="text-xs text-slate-500">Busca por nombre, código, código de barras, categoría o marca. Atajos: F2 / Ctrl+K, Esc para cerrar.</p>
               </div>
-              <button onClick={() => setShowBuscar(false)} className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
-                <X className="h-4 w-4" />
+              <button onClick={() => setShowBuscar(false)} aria-label="Cerrar búsqueda" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-4 border-b border-slate-200">
+            <div className="shrink-0 border-b border-slate-200 p-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -709,26 +714,26 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                   placeholder="Buscar producto..."
-                  className="w-full rounded-md border border-slate-300 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1"
+                  className="min-h-11 w-full rounded-md border border-slate-300 pl-9 pr-4 text-sm focus:outline-none focus:ring-1"
                   style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                   autoFocus
                 />
               </div>
             </div>
-            <div className="flex-1 overflow-auto p-2">
+            <div className="min-h-[180px] flex-1 overflow-y-auto p-2">
               {filteredBuscar.length === 0 ? (
                 <div className="px-4 py-10 text-center text-sm text-slate-500">No se encontraron productos</div>
               ) : (
                 <div className="space-y-1">
                   {filteredBuscar.slice(0, 100).map((prod) => (
-                    <button key={prod.id} onClick={() => addToCart(prod)} className="w-full flex items-center justify-between p-3 rounded-md hover:bg-slate-50 text-left border border-transparent hover:border-slate-200">
+                    <button key={prod.id} onClick={() => addToCart(prod)} className="flex min-h-11 w-full items-center justify-between gap-2 rounded-md p-3 text-left hover:bg-slate-50 border border-transparent hover:border-slate-200">
                       <div className="min-w-0">
                         <div className="text-sm font-medium text-slate-900 truncate">{prod.name}</div>
                         <div className="text-xs text-slate-500 font-mono truncate">
                           {prod.code}{prod.barcode ? ` · ${prod.barcode}` : ""}{prod.category?.name ? ` · ${prod.category.name}` : ""}{prod.brand?.name ? ` · ${prod.brand.name}` : ""}
                         </div>
                       </div>
-                      <div className="text-sm font-medium text-slate-900 ml-3 shrink-0">{formatGuarani(prod.price)}</div>
+                      <div className="text-sm font-medium text-slate-900 ml-1 shrink-0">{formatGuarani(prod.price)}</div>
                     </button>
                   ))}
                 </div>
@@ -739,15 +744,15 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
       )}
 
       {showCliente && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-xl max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
-              <h2 className="font-medium text-slate-900">Seleccionar Cliente</h2>
-              <button onClick={() => setShowCliente(false)} className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
-                <X className="h-4 w-4" />
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-white sm:max-w-xl sm:rounded-2xl">
+            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
+              <h2 className="min-w-0 truncate font-medium text-slate-900">Seleccionar Cliente</h2>
+              <button onClick={() => setShowCliente(false)} aria-label="Cerrar selección de cliente" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-4 border-b border-slate-200 space-y-2">
+            <div className="shrink-0 space-y-2 border-b border-slate-200 p-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -755,27 +760,27 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                   value={busquedaCliente}
                   onChange={(e) => setBusquedaCliente(e.target.value)}
                   placeholder="Buscar por nombre o RUC/CI..."
-                  className="w-full rounded-md border border-slate-300 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1"
+                  className="min-h-11 w-full rounded-md border border-slate-300 pl-9 pr-4 text-sm focus:outline-none focus:ring-1"
                   style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                   autoFocus
                 />
               </div>
               <button
                 onClick={() => { setShowNuevoCliente(true); setShowCliente(false); }}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-white"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md px-3 text-sm font-medium text-white"
                 style={{ backgroundColor: "var(--primary-600)" }}
               >
                 <UserPlus className="h-4 w-4" />
                 Nuevo cliente rápido
               </button>
             </div>
-            <div className="flex-1 overflow-auto p-2">
+            <div className="min-h-[180px] flex-1 overflow-y-auto p-2">
               <button
                 onClick={() => { setClienteSeleccionado(null); setShowCliente(false); setBusquedaCliente(""); }}
-                className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-slate-50 text-left mb-1"
+                className="mb-1 flex min-h-11 w-full items-center gap-3 rounded-md p-3 text-left hover:bg-slate-50"
               >
-                <UserPlus className="h-5 w-5 text-slate-400" />
-                <div>
+                <UserPlus className="h-5 w-5 shrink-0 text-slate-400" />
+                <div className="min-w-0">
                   <div className="text-sm font-medium text-slate-900">Sin cliente</div>
                   <div className="text-xs text-slate-500">Venta al contado sin cliente registrado</div>
                 </div>
@@ -785,11 +790,11 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                   <button
                     key={cli.id}
                     onClick={() => { setClienteSeleccionado(cli); setShowCliente(false); setBusquedaCliente(""); }}
-                    className="w-full flex items-center justify-between p-3 rounded-md hover:bg-slate-50 text-left"
+                    className="flex min-h-11 w-full items-center justify-between gap-2 rounded-md p-3 text-left hover:bg-slate-50"
                   >
-                    <div>
-                      <div className="text-sm font-medium text-slate-900">{cli.name}</div>
-                      <div className="text-xs text-slate-500">{cli.document ? `RUC/CI: ${cli.document}` : cli.phone || ""}</div>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium text-slate-900">{cli.name}</div>
+                      <div className="truncate text-xs text-slate-500">{cli.document ? `RUC/CI: ${cli.document}` : cli.phone || ""}</div>
                     </div>
                   </button>
                 ))}
@@ -800,22 +805,22 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
       )}
 
       {showNuevoCliente && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
-              <h2 className="font-medium text-slate-900">Nuevo Cliente Rápido</h2>
-              <button onClick={() => setShowNuevoCliente(false)} className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
-                <X className="h-4 w-4" />
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-4 sm:max-w-lg sm:rounded-2xl sm:p-6">
+            <div className="mb-4 flex items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <h2 className="min-w-0 truncate font-medium text-slate-900">Nuevo Cliente Rápido</h2>
+              <button onClick={() => setShowNuevoCliente(false)} aria-label="Cerrar nuevo cliente" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-4 space-y-3">
+            <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Nombre y Apellido *</label>
                 <input
                   type="text"
                   value={nuevoCliente.name}
                   onChange={(e) => setNuevoCliente({ ...nuevoCliente, name: e.target.value })}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                  className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1"
                   style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                   autoFocus
                 />
@@ -826,7 +831,7 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                   type="text"
                   value={nuevoCliente.document}
                   onChange={(e) => setNuevoCliente({ ...nuevoCliente, document: e.target.value })}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                  className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1"
                   style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                 />
               </div>
@@ -836,14 +841,14 @@ ${metodo === "CREDITO" ? `<p style="display:flex;justify-content:space-between">
                   type="text"
                   value={nuevoCliente.phone}
                   onChange={(e) => setNuevoCliente({ ...nuevoCliente, phone: e.target.value })}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                  className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1"
                   style={{ "--tw-ring-color": "var(--primary-600)" } as any}
                 />
               </div>
             </div>
-            <div className="flex gap-2 px-4 py-3 border-t border-slate-200">
-              <button onClick={() => setShowNuevoCliente(false)} className="flex-1 rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
-              <button onClick={guardarNuevoCliente} disabled={guardandoCliente} className="flex-1 rounded-md px-4 py-2 text-sm font-medium text-white disabled:bg-slate-200" style={{ backgroundColor: guardandoCliente ? undefined : "var(--primary-600)" }}>
+            <div className="mt-4 flex gap-2 border-t border-slate-200 pt-3">
+              <button onClick={() => setShowNuevoCliente(false)} className="min-h-11 flex-1 rounded-md border border-slate-300 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
+              <button onClick={guardarNuevoCliente} disabled={guardandoCliente} className="min-h-11 flex-1 rounded-md px-4 text-sm font-medium text-white disabled:bg-slate-200" style={{ backgroundColor: guardandoCliente ? undefined : "var(--primary-600)" }}>
                 {guardandoCliente ? "Guardando..." : "Guardar y seleccionar"}
               </button>
             </div>

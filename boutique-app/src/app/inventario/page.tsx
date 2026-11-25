@@ -123,7 +123,7 @@ export default function InventarioPage() {
             <h1 className="text-xl sm:text-2xl font-semibold text-slate-900">Inventario</h1>
             <p className="text-sm text-slate-500 mt-0.5">Control de stock y movimientos</p>
           </div>
-          <button onClick={() => setShowMovimientos(true)} className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+          <button onClick={() => setShowMovimientos(true)} aria-label="Ver movimientos" className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-3 text-sm font-medium text-slate-700 hover:bg-slate-50">
             <ArrowUpDown className="h-4 w-4" />
             <span className="hidden sm:inline">Movimientos</span>
           </button>
@@ -137,7 +137,7 @@ export default function InventarioPage() {
               </div>
               <div className="min-w-0">
                 <p className="text-xs text-slate-500 truncate">Productos</p>
-                <p className="text-xl sm:text-2xl font-semibold text-slate-900">{totalProductos}</p>
+                <p className="w-full min-w-0 truncate text-lg font-semibold text-slate-900 sm:text-2xl">{totalProductos}</p>
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@ export default function InventarioPage() {
               </div>
               <div className="min-w-0">
                 <p className="text-xs text-slate-500 truncate">Stock Bajo</p>
-                <p className="text-xl sm:text-2xl font-semibold text-slate-900">{stockBajo}</p>
+                <p className="w-full min-w-0 truncate text-lg font-semibold text-slate-900 sm:text-2xl">{stockBajo}</p>
               </div>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function InventarioPage() {
               </div>
               <div className="min-w-0">
                 <p className="text-xs text-slate-500 truncate">Movimientos</p>
-                <p className="text-xl sm:text-2xl font-semibold text-slate-900">{totalMovimientos}</p>
+                <p className="w-full min-w-0 truncate text-lg font-semibold text-slate-900 sm:text-2xl">{totalMovimientos}</p>
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default function InventarioPage() {
           <div className="p-3 sm:p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input type="text" placeholder="Buscar producto..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-md border border-slate-300 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+              <input type="text" placeholder="Buscar producto..." value={search} onChange={(e) => setSearch(e.target.value)} className="min-h-11 w-full rounded-md border border-slate-300 pl-9 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
             </div>
           </div>
         </div>
@@ -209,14 +209,14 @@ export default function InventarioPage() {
                         <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-50 text-green-700">Normal</span>
                       )}
                       <div className="flex items-center gap-1">
-                        <button onClick={() => abrirAjuste(producto, "ENTRADA")} className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100">
-                          <Plus className="h-3 w-3" />Entrada
+                        <button onClick={() => abrirAjuste(producto, "ENTRADA")} aria-label={`Entrada de stock de ${producto.name}`} className="flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-md px-2 text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100">
+                          <Plus className="h-4 w-4" /><span className="hidden sm:inline">Entrada</span>
                         </button>
-                        <button onClick={() => abrirAjuste(producto, "SALIDA")} className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100">
-                          <Minus className="h-3 w-3" />Salida
+                        <button onClick={() => abrirAjuste(producto, "SALIDA")} aria-label={`Salida de stock de ${producto.name}`} className="flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-md px-2 text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100">
+                          <Minus className="h-4 w-4" /><span className="hidden sm:inline">Salida</span>
                         </button>
-                        <button onClick={() => abrirAjuste(producto, "AJUSTE")} className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">
-                          <SlidersHorizontal className="h-3 w-3" />
+                        <button onClick={() => abrirAjuste(producto, "AJUSTE")} aria-label={`Ajustar stock de ${producto.name}`} className="flex min-h-11 min-w-11 items-center justify-center rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">
+                          <SlidersHorizontal className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
@@ -265,9 +265,9 @@ export default function InventarioPage() {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-1">
-                            <button onClick={() => abrirAjuste(producto, "ENTRADA")} className="text-xs px-2 py-1 rounded-md bg-green-50 text-green-700 hover:bg-green-100">Entrada</button>
-                            <button onClick={() => abrirAjuste(producto, "SALIDA")} className="text-xs px-2 py-1 rounded-md bg-red-50 text-red-700 hover:bg-red-100">Salida</button>
-                            <button onClick={() => abrirAjuste(producto, "AJUSTE")} className="text-xs px-2 py-1 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">Ajuste</button>
+                            <button onClick={() => abrirAjuste(producto, "ENTRADA")} className="min-h-11 text-xs px-2 rounded-md bg-green-50 text-green-700 hover:bg-green-100">Entrada</button>
+                            <button onClick={() => abrirAjuste(producto, "SALIDA")} className="min-h-11 text-xs px-2 rounded-md bg-red-50 text-red-700 hover:bg-red-100">Salida</button>
+                            <button onClick={() => abrirAjuste(producto, "AJUSTE")} className="min-h-11 text-xs px-2 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">Ajuste</button>
                           </div>
                         </td>
                       </tr>
@@ -281,13 +281,13 @@ export default function InventarioPage() {
       </div>
 
       {showMovimientos && (
-        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
-          <div className="bg-white rounded-t-2xl sm:rounded-lg w-full sm:max-w-3xl max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-200 shrink-0">
-              <h2 className="text-base sm:text-lg font-medium text-slate-900">Historial de Movimientos</h2>
-              <button onClick={() => setShowMovimientos(false)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100"><X className="h-5 w-5" /></button>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="flex max-h-[90dvh] w-full flex-col rounded-t-2xl bg-white sm:max-w-3xl sm:rounded-2xl">
+            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 sm:px-6">
+              <h2 className="min-w-0 truncate text-base font-medium text-slate-900 sm:text-lg">Historial de Movimientos</h2>
+              <button onClick={() => setShowMovimientos(false)} aria-label="Cerrar movimientos" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100"><X className="h-5 w-5" /></button>
             </div>
-            <div className="flex-1 overflow-auto sm:hidden divide-y divide-slate-200">
+            <div className="min-h-[180px] flex-1 overflow-y-auto sm:hidden divide-y divide-slate-200">
               {movimientos.length === 0 ? (
                 <div className="px-4 py-8 text-center text-sm text-slate-500">Sin movimientos</div>
               ) : (
@@ -306,7 +306,7 @@ export default function InventarioPage() {
                 ))
               )}
             </div>
-            <div className="hidden sm:block flex-1 overflow-auto">
+            <div className="hidden min-h-[180px] flex-1 overflow-auto sm:block">
               <table className="w-full">
                 <thead className="bg-slate-50 border-b border-slate-200 sticky top-0">
                   <tr>
@@ -339,32 +339,32 @@ export default function InventarioPage() {
       )}
 
       {showAjuste && productoSeleccionado && (
-        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
-          <div className="bg-white rounded-t-2xl sm:rounded-lg w-full sm:max-w-md">
-            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-200">
-              <h2 className="text-base sm:text-lg font-medium text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white sm:max-w-md sm:rounded-2xl">
+            <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 sm:px-6">
+              <h2 className="min-w-0 truncate text-base font-medium text-slate-900 sm:text-lg">
                 {tipoAjuste === "ENTRADA" ? "Entrada de Mercaderia" : tipoAjuste === "SALIDA" ? "Salida de Mercaderia" : "Ajuste de Stock"}
               </h2>
-              <button onClick={() => setShowAjuste(false)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100"><X className="h-5 w-5" /></button>
+              <button onClick={() => setShowAjuste(false)} aria-label="Cerrar ajuste" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100"><X className="h-5 w-5" /></button>
             </div>
-            <div className="p-4 sm:p-6 space-y-4">
-              <div className="p-3 rounded-md bg-slate-50">
-                <p className="text-sm font-medium text-slate-900">{productoSeleccionado.name}</p>
-                <p className="text-xs text-slate-500 font-mono">{productoSeleccionado.code}</p>
+            <div className="space-y-4 p-4 sm:p-6">
+              <div className="min-w-0 rounded-md bg-slate-50 p-3">
+                <p className="truncate text-sm font-medium text-slate-900">{productoSeleccionado.name}</p>
+                <p className="truncate text-xs text-slate-500 font-mono">{productoSeleccionado.code}</p>
                 <p className="text-xs text-slate-400 mt-1">Stock actual: <span className="font-medium text-slate-700">{getStock(productoSeleccionado)}</span></p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Cantidad</label>
-                <input type="number" inputMode="numeric" value={cantidad} onChange={(e) => setCantidad(e.target.value)} autoFocus className="w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                <input type="number" inputMode="numeric" value={cantidad} onChange={(e) => setCantidad(e.target.value)} autoFocus className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Motivo</label>
-                <input type="text" value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ej: Compra, Dano, Conteo..." className="w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                <input type="text" value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ej: Compra, Dano, Conteo..." className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
               </div>
             </div>
-            <div className="flex gap-2 px-4 sm:px-6 py-4 border-t border-slate-200">
-              <button onClick={() => setShowAjuste(false)} className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
-              <button onClick={guardarAjuste} className="flex-1 rounded-md bg-[var(--primary-600)] px-4 py-2.5 text-sm font-medium text-white hover:opacity-90">Guardar</button>
+            <div className="flex gap-2 border-t border-slate-200 px-4 py-3 sm:px-6">
+              <button onClick={() => setShowAjuste(false)} className="min-h-11 flex-1 rounded-md border border-slate-300 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
+              <button onClick={guardarAjuste} className="min-h-11 flex-1 rounded-md bg-[var(--primary-600)] px-4 text-sm font-medium text-white hover:opacity-90">Guardar</button>
             </div>
           </div>
         </div>

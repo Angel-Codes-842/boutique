@@ -77,7 +77,7 @@ export default function ClientesPage() {
             <h1 className="text-xl sm:text-2xl font-semibold text-slate-900">Clientes</h1>
             <p className="text-sm text-slate-500 mt-0.5">Gestion de clientes</p>
           </div>
-          <button onClick={openNew} className="inline-flex items-center gap-2 rounded-md bg-[var(--primary-600)] px-3 sm:px-4 py-2 text-sm font-medium text-white hover:opacity-90">
+          <button onClick={openNew} className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md bg-[var(--primary-600)] px-3 sm:px-4 text-sm font-medium text-white hover:opacity-90">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Nuevo cliente</span>
             <span className="sm:hidden">Nuevo</span>
@@ -88,7 +88,7 @@ export default function ClientesPage() {
           <div className="p-3 sm:p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input type="text" placeholder="Buscar por nombre, RUC/CI o telefono..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-md border border-slate-300 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+              <input type="text" placeholder="Buscar por nombre, RUC/CI o telefono..." value={search} onChange={(e) => setSearch(e.target.value)} className="min-h-11 w-full rounded-md border border-slate-300 pl-9 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
             </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function ClientesPage() {
                         </div>
                       )}
                     </div>
-                    <button onClick={() => openEdit(cliente)} className="shrink-0 rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900">
+                    <button onClick={() => openEdit(cliente)} aria-label={`Editar ${cliente.name}`} className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900">
                       <Pencil className="h-4 w-4" />
                     </button>
                   </div>
@@ -169,7 +169,7 @@ export default function ClientesPage() {
                       <td className="px-6 py-4 text-sm text-slate-600">{cliente.email || "-"}</td>
                       <td className="px-6 py-4 text-sm text-slate-600">{cliente.address || "-"}</td>
                       <td className="px-6 py-4 text-right">
-                        <button onClick={() => openEdit(cliente)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                        <button onClick={() => openEdit(cliente)} aria-label={`Editar ${cliente.name}`} className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900">
                           <Pencil className="h-4 w-4" />
                         </button>
                       </td>
@@ -183,39 +183,39 @@ export default function ClientesPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
-          <div className="bg-white rounded-t-2xl sm:rounded-lg w-full sm:max-w-lg max-h-[90vh] overflow-auto">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white sm:max-w-lg sm:rounded-2xl">
             <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-200">
               <h2 className="text-base sm:text-lg font-medium text-slate-900">{editing ? "Editar Cliente" : "Nuevo Cliente"}</h2>
-              <button onClick={() => setShowModal(false)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100"><X className="h-5 w-5" /></button>
+              <button onClick={() => setShowModal(false)} aria-label="Cerrar formulario" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100"><X className="h-5 w-5" /></button>
             </div>
             <div className="p-4 sm:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Nombre / Razon Social *</label>
-                <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">RUC / CI</label>
-                  <input type="text" value={form.document} onChange={(e) => setForm({ ...form, document: e.target.value })} className="w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                  <input type="text" value={form.document} onChange={(e) => setForm({ ...form, document: e.target.value })} className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">Telefono</label>
-                  <input type="tel" inputMode="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                  <input type="tel" inputMode="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Correo Electronico</label>
-                <input type="email" inputMode="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                <input type="email" inputMode="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Direccion</label>
-                <input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                <input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="min-h-11 w-full rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
               </div>
             </div>
             <div className="flex gap-2 px-4 sm:px-6 py-4 border-t border-slate-200">
-              <button onClick={() => setShowModal(false)} className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
-              <button onClick={save} className="flex-1 rounded-md bg-[var(--primary-600)] px-4 py-2.5 text-sm font-medium text-white hover:opacity-90">Guardar</button>
+              <button onClick={() => setShowModal(false)} className="min-h-11 flex-1 rounded-md border border-slate-300 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
+              <button onClick={save} className="min-h-11 flex-1 rounded-md bg-[var(--primary-600)] px-4 text-sm font-medium text-white hover:opacity-90">Guardar</button>
             </div>
           </div>
         </div>

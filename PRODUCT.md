@@ -28,7 +28,7 @@ Un solo flujo integra **caja + créditos + stock**, con operación simple para q
 - La reapertura de caja crea una sesión nueva con el efectivo contado de la última sesión; el cierre previo queda intacto como auditoría.
 - El inventario maneja stock real, movimientos y ajustes con validaciones.
 - `/reportes` es de uso exclusivo del administrador.
-- La configuración separa ticket y factura manual; la app es instalable como PWA.
+- La configuración separa ticket y factura manual; la app es instalable como PWA con app shell offline. Las operaciones de venta/caja requieren red.
 
 ## Capabilities and Constraints
 

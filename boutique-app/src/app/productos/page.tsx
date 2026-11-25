@@ -150,7 +150,7 @@ export default function ProductosPage() {
             <h1 className="text-xl sm:text-2xl font-semibold text-slate-900">Productos</h1>
             <p className="text-sm text-slate-500 mt-1">Gestión de catálogo de productos</p>
           </div>
-          <button onClick={openNew} className="inline-flex items-center gap-2 rounded-md bg-[var(--primary-600)] px-4 py-2 text-sm font-medium text-white hover:opacity-90">
+          <button onClick={openNew} className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md bg-[var(--primary-600)] px-4 text-sm font-medium text-white hover:opacity-90">
             <Plus className="h-4 w-4" />
             Nuevo producto
           </button>
@@ -165,7 +165,7 @@ export default function ProductosPage() {
                 placeholder="Buscar por código o nombre..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-md border border-slate-300 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)] focus:border-[var(--primary-600)]"
+                className="min-h-11 w-full rounded-md border border-slate-300 pl-9 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)] focus:border-[var(--primary-600)]"
               />
             </div>
           </div>
@@ -194,8 +194,8 @@ export default function ProductosPage() {
                   <div className="flex items-center justify-between mt-2">
                     <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-50 text-green-700">Activo</span>
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEdit(producto)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100"><Pencil className="h-3.5 w-3.5" /></button>
-                      <button onClick={() => remove(producto.id)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100 hover:text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                      <button onClick={() => openEdit(producto)} aria-label={`Editar ${producto.name}`} className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100"><Pencil className="h-4 w-4" /></button>
+                      <button onClick={() => remove(producto.id)} aria-label={`Eliminar ${producto.name}`} className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </div>
                 </div>
@@ -235,10 +235,10 @@ export default function ProductosPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => openEdit(producto)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                        <button onClick={() => openEdit(producto)} aria-label={`Editar ${producto.name}`} className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900">
                           <Pencil className="h-4 w-4" />
                         </button>
-                        <button onClick={() => remove(producto.id)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100 hover:text-red-600">
+                        <button onClick={() => remove(producto.id)} aria-label={`Eliminar ${producto.name}`} className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-red-600">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
@@ -253,59 +253,59 @@ export default function ProductosPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-              <h2 className="text-lg font-medium text-slate-900">{editing ? "Editar Producto" : "Nuevo Producto"}</h2>
-              <button onClick={() => setShowModal(false)} className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-4 sm:max-w-2xl sm:rounded-2xl sm:p-6">
+            <div className="mb-4 flex items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <h2 className="min-w-0 truncate text-lg font-medium text-slate-900">{editing ? "Editar Producto" : "Nuevo Producto"}</h2>
+              <button onClick={() => setShowModal(false)} aria-label="Cerrar formulario" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600">
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Código *</label>
-                  <input type="text" value={form.code} onChange={(e) => setForm({...form, code: e.target.value})} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                  <input type="text" value={form.code} onChange={(e) => setForm({...form, code: e.target.value})} className="min-h-11 w-full min-w-0 rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Nombre *</label>
-                  <input type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                  <input type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="min-h-11 w-full min-w-0 rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Precio Venta (₲) *</label>
-                  <input type="number" value={form.price} onChange={(e) => setForm({...form, price: e.target.value})} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                  <input type="number" value={form.price} onChange={(e) => setForm({...form, price: e.target.value})} className="min-h-11 w-full min-w-0 rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Costo (₲)</label>
-                  <input type="number" value={form.cost} onChange={(e) => setForm({...form, cost: e.target.value})} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                  <input type="number" value={form.cost} onChange={(e) => setForm({...form, cost: e.target.value})} className="min-h-11 w-full min-w-0 rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Stock Mínimo</label>
-                  <input type="number" value={form.minStock} onChange={(e) => setForm({...form, minStock: e.target.value})} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                  <input type="number" value={form.minStock} onChange={(e) => setForm({...form, minStock: e.target.value})} className="min-h-11 w-full min-w-0 rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Categoría</label>
-                  <select value={form.categoryId} onChange={(e) => setForm({...form, categoryId: e.target.value})} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]">
+                  <select value={form.categoryId} onChange={(e) => setForm({...form, categoryId: e.target.value})} className="min-h-11 w-full min-w-0 rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]">
                     <option value="">Sin categoría</option>
                     {categorias.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Marca</label>
-                  <select value={form.brandId} onChange={(e) => setForm({...form, brandId: e.target.value})} className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]">
+                  <select value={form.brandId} onChange={(e) => setForm({...form, brandId: e.target.value})} className="min-h-11 w-full min-w-0 rounded-md border border-slate-300 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]">
                     <option value="">Sin marca</option>
                     {marcas.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                   </select>
                 </div>
               </div>
             </div>
-            <div className="flex gap-2 px-6 py-4 border-t border-slate-200">
-              <button onClick={() => setShowModal(false)} className="flex-1 rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
-              <button onClick={save} className="flex-1 rounded-md bg-[var(--primary-600)] px-4 py-2 text-sm font-medium text-white hover:opacity-90">Guardar</button>
+            <div className="mt-4 flex gap-2 border-t border-slate-200 pt-3">
+              <button onClick={() => setShowModal(false)} className="min-h-11 flex-1 rounded-md border border-slate-300 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</button>
+              <button onClick={save} className="min-h-11 flex-1 rounded-md bg-[var(--primary-600)] px-4 text-sm font-medium text-white hover:opacity-90">Guardar</button>
             </div>
           </div>
         </div>

@@ -37,6 +37,7 @@ ENV PORT=3000
 RUN addgroup -S nextjs && adduser -S nextjs -G nextjs
 COPY --from=production-dependencies --chown=nextjs:nextjs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nextjs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nextjs /app/public ./public
 COPY --from=builder --chown=nextjs:nextjs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nextjs /app/next.config.ts ./next.config.ts
 COPY --from=builder --chown=nextjs:nextjs /app/tsconfig.json ./tsconfig.json
