@@ -4,18 +4,29 @@ services:
     container_name: boutique-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: boutique
-      POSTGRES_PASSWORD: boutique
-      POSTGRES_DB: boutique
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER:-boutique}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}
+      POSTGRES_DB: ${POSTGRES_DB:-boutique}
     volumes:
       - boutique_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U boutique -d boutique"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  migrate:
+    build:
+      context: ./boutique-app
+      dockerfile: Dockerfile
+      target: migrator
+    container_name: boutique-migrate
+    restart: "no"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-boutique}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}@db:5432/${POSTGRES_DB:-boutique}
+    depends_on:
+      db:
+        condition: service_healthy
 
   app:
     build:
@@ -23,17 +34,26 @@ services:
       dockerfile: Dockerfile
     container_name: boutique-app
     restart: unless-stopped
-    env_file:
-      - ./boutique-app/.env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-boutique}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}@db:5432/${POSTGRES_DB:-boutique}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in the root .env file}
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./boutique-app:/app
-      - /app/node_modules
-      - /app/.next
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
 volumes:
   boutique_data:

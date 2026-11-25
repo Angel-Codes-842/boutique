@@ -1,0 +1,252 @@
+// Prisma schema para Boutique POS - Paraguay, Guaraníes (enteros)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  CAJERO
+  VENDEDOR
+  ALMACEN
+}
+
+enum SaleStatus {
+  PENDIENTE
+  PAGADA
+  ANULADA
+}
+
+enum PaymentMethod {
+  EFECTIVO
+  TARJETA
+  TRANSFERENCIA
+  MIXTO
+  CREDITO
+}
+
+enum DocumentType {
+  TICKET
+  FACTURA
+}
+
+enum MovementType {
+  ENTRADA
+  SALIDA
+  AJUSTE
+  VENTA
+}
+
+enum CashMovementType {
+  APERTURA
+  CIERRE
+  INGRESO
+  EGRESO
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  password  String
+  role      Role     @default(VENDEDOR)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sales     Sale[]
+  cashSessions CashSession[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+}
+
+model Brand {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  products  Product[]
+}
+
+model Product {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  barcode       String?   @unique
+  name          String
+  description   String?
+  categoryId    String?
+  brandId       String?
+  price         Int       // Precio venta en Guaraníes (entero)
+  cost          Int       @default(0) // Costo en Guaraníes (entero)
+  minStock      Int       @default(0)
+  maxStock      Int       @default(0)
+  trackStock    Boolean   @default(true)
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  category      Category? @relation(fields: [categoryId], references: [id])
+  brand         Brand?    @relation(fields: [brandId], references: [id])
+  variants      ProductVariant[]
+  stockMovements StockMovement[]
+  saleItems     SaleItem[]
+}
+
+model ProductVariant {
+  id        String   @id @default(cuid())
+  productId String
+  size      String?
+  color     String?
+  code      String   @unique
+  stock     Int      @default(0)
+  price     Int?     // Precio override opcional
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  saleItems SaleItem[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  document  String?  @unique // RUC/CI
+  phone     String?
+  email     String?
+  address   String?
+  debt      Int      @default(0) // Saldo pendiente en Guaraníes
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sales     Sale[]
+}
+
+model Sale {
+  id            String       @id @default(cuid())
+  number        String       @unique // Número de comprobante interno (ticket)
+  invoiceNumber String?      @unique // Número de factura
+  documentType  DocumentType @default(TICKET)
+  customerId    String?
+  userId        String
+  cashSessionId String?
+  status        SaleStatus   @default(PAGADA)
+  paymentMethod PaymentMethod @default(EFECTIVO)
+  subtotal      Int
+  discount      Int          @default(0)
+  total         Int
+  paidAmount    Int
+  changeAmount  Int          @default(0)
+  notes         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  customer      Customer?   @relation(fields: [customerId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
+  cashSession   CashSession? @relation(fields: [cashSessionId], references: [id])
+  items         SaleItem[]
+  payments      Payment[]
+}
+
+model SaleItem {
+  id              String         @id @default(cuid())
+  saleId          String
+  productId       String
+  variantId       String?
+  quantity        Int
+  unitPrice       Int
+  discount        Int            @default(0)
+  total           Int
+
+  sale            Sale           @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product         Product        @relation(fields: [productId], references: [id])
+  variant         ProductVariant? @relation(fields: [variantId], references: [id])
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  saleId        String
+  method        PaymentMethod
+  amount        Int
+  reference     String?
+  createdAt     DateTime      @default(now())
+
+  sale          Sale          @relation(fields: [saleId], references: [id], onDelete: Cascade)
+}
+
+model CashSession {
+  id            String      @id @default(cuid())
+  userId        String
+  openedAt      DateTime    @default(now())
+  closedAt      DateTime?
+  openingAmount Int         // Monto inicial en Guaraníes
+  closingAmount Int?        // Monto contado al cierre
+  expectedAmount Int?       // Monto esperado según sistema
+  difference    Int?        // Diferencia (closing - expected)
+  status        String      @default("ABIERTA") // ABIERTA | CERRADA
+  notes         String?
+
+  user          User        @relation(fields: [userId], references: [id])
+  sales         Sale[]
+  movements     CashMovement[]
+}
+
+model CashMovement {
+  id            String            @id @default(cuid())
+  cashSessionId String
+  type          CashMovementType
+  amount        Int
+  concept       String
+  reference     String?
+  createdAt     DateTime          @default(now())
+
+  cashSession   CashSession       @relation(fields: [cashSessionId], references: [id], onDelete: Cascade)
+}
+
+model StockMovement {
+  id          String        @id @default(cuid())
+  productId   String
+  variantId   String?
+  type        MovementType
+  quantity    Int
+  reason      String?
+  reference   String?
+  userId      String?
+  createdAt   DateTime      @default(now())
+
+  product     Product       @relation(fields: [productId], references: [id])
+}
+
+model StoreConfig {
+  id               String    @id @default(cuid())
+  name             String    @default("Mi Boutique")
+  ruc              String?
+  address          String?
+  phone            String?
+  ticketPrefix     String    @default("T")
+  ticketNumber     Int       @default(1)
+  establecimiento  String    @default("001")
+  puntoExpedicion  String    @default("001")
+  timbrado         String?
+  timbradoVigencia DateTime?
+  invoiceNumber    Int       @default(1)
+  updatedAt        DateTime  @updatedAt
+}
