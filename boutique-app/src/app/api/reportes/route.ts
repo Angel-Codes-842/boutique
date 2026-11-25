@@ -15,7 +15,12 @@ function endOfDay(date: Date) {
 
 export async function GET(req: NextRequest) {
   try {
-    const authorization = await authorizeApiRequest(["ADMIN"]);
+    // Leer la cookie desde NextRequest evita el request-time API global
+    // durante la prerenderización con Cache Components.
+    const authorization = await authorizeApiRequest(
+      ["ADMIN"],
+      req.cookies.get("boutique_session")?.value,
+    );
     if ("response" in authorization) return authorization.response;
 
     const { searchParams } = new URL(req.url);
@@ -139,6 +144,15 @@ export async function GET(req: NextRequest) {
       })),
     });
   } catch (error) {
+    // Next.js usa este digest para salir de la prerenderización; debe propagarse.
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "digest" in error &&
+      (error as { digest?: unknown }).digest === "NEXT_PRERENDER_INTERRUPTED"
+    ) {
+      throw error;
+    }
     console.error("Error GET reportes:", error);
     return NextResponse.json({ error: "Error al obtener reportes" }, { status: 500 });
   }

@@ -2,11 +2,34 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
-import { Store, Receipt, Database, Save } from "lucide-react";
+import { Store, Receipt, Database, Save, PlugZap } from "lucide-react";
 import { Toaster, toast } from "sonner";
 
+interface FactpyPublicStatus {
+  enabled: boolean;
+  configured: boolean;
+  environment: "test" | "production";
+  apiUrl: string;
+  available: boolean;
+}
+
+type ConfiguracionState = {
+  name: string;
+  ruc: string;
+  address: string;
+  phone: string;
+  ticketPrefix: string;
+  ticketNumber: number;
+  establecimiento: string;
+  puntoExpedicion: string;
+  timbrado: string;
+  timbradoVigencia: string;
+  invoiceNumber: number;
+  factpy?: FactpyPublicStatus;
+};
+
 export default function ConfiguracionPage() {
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState<ConfiguracionState>({
     name: "",
     ruc: "",
     address: "",
@@ -149,6 +172,37 @@ export default function ConfiguracionPage() {
               </div>
               <p className="text-xs text-slate-500">Formato de factura: {(config.establecimiento || "001")}-{(config.puntoExpedicion || "001")}-{String(config.invoiceNumber || 1).padStart(7, "0")}</p>
               {config.timbrado && <p className="text-xs text-slate-500">Timbrado N° {config.timbrado}</p>}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-slate-200">
+            <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-200">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100">
+                <PlugZap className="h-5 w-5 text-slate-700" />
+              </div>
+              <div>
+                <h2 className="font-medium text-slate-900">Facturación electrónica (FACTPY)</h2>
+                <p className="text-sm text-slate-500">Preparado para SIFEN / DNIT — aún no activo</p>
+              </div>
+            </div>
+            <div className="p-6 space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+                  {config.factpy?.enabled ? "Habilitado (pendiente de implementar)" : "Deshabilitado"}
+                </span>
+                <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                  {config.factpy?.available === false ? "Sin emisión disponible" : "No disponible"}
+                </span>
+              </div>
+              <div className="text-sm text-slate-600 space-y-1">
+                <p><span className="font-medium">Ambiente:</span> {config.factpy?.environment || "test"}</p>
+                <p><span className="font-medium">API:</span> {config.factpy?.apiUrl || "https://api.factpy.com"}</p>
+                <p><span className="font-medium">recordID:</span> {config.factpy?.configured ? "Configurado en el servidor" : "No configurado"}</p>
+              </div>
+              <p className="text-xs text-slate-500">
+                Los comprobantes siguen siendo manuales e internos (&ldquo;Sin valor fiscal&rdquo;).
+                La activación se hará en una etapa posterior. Ver <code>docs/FACTPY.md</code>.
+              </p>
             </div>
           </div>
 

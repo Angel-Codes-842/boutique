@@ -16,7 +16,23 @@ export async function GET() {
       },
       orderBy: { openedAt: "desc" },
     });
-    return NextResponse.json(session);
+    const historial = await prisma.cashSession.findMany({
+      where: { status: "CERRADA" },
+      include: {
+        user: { select: { name: true } },
+        movements: {
+          select: { type: true, amount: true, concept: true, createdAt: true },
+          orderBy: { createdAt: "asc" },
+        },
+        _count: { select: { sales: true } },
+      },
+      orderBy: { closedAt: "desc" },
+      take: 20,
+    });
+
+    // Se mantiene la forma de respuesta anterior para no romper /pos.
+    if (session) return NextResponse.json({ ...session, historial });
+    return NextResponse.json({ status: "CERRADA", historial });
   } catch (error) {
     console.error("Error GET caja:", error);
     return NextResponse.json({ error: "Error al obtener caja" }, { status: 500 });
@@ -54,6 +70,54 @@ export async function POST(req: NextRequest) {
             type: "APERTURA",
             amount: openingAmountValue,
             concept: "Apertura de caja",
+          },
+        });
+        return openedSession;
+      });
+
+      return NextResponse.json(session, { status: 201 });
+    }
+
+    if (action === "reabrir") {
+      if (authorization.user.role !== "ADMIN") {
+        return NextResponse.json({ error: "Solo un administrador puede reabrir la caja" }, { status: 403 });
+      }
+
+      const existing = await prisma.cashSession.findFirst({ where: { status: "ABIERTA" } });
+      if (existing) {
+        return NextResponse.json({ error: "Ya hay una caja abierta" }, { status: 400 });
+      }
+
+      const lastClosed = await prisma.cashSession.findFirst({
+        where: { status: "CERRADA" },
+        orderBy: { closedAt: "desc" },
+      });
+      if (!lastClosed) {
+        return NextResponse.json({ error: "No hay una caja cerrada para reabrir" }, { status: 400 });
+      }
+
+      // Se abre una sesión NUEVA con el efectivo contado de la última sesión.
+      // La sesión cerrada queda intacta para auditoría.
+      const openingAmount = lastClosed.closingAmount ?? lastClosed.expectedAmount ?? 0;
+      if (!Number.isSafeInteger(openingAmount) || openingAmount < 0) {
+        return NextResponse.json({ error: "Monto inicial inválido en la última caja" }, { status: 400 });
+      }
+
+      const session = await prisma.$transaction(async (tx) => {
+        const openedSession = await tx.cashSession.create({
+          data: {
+            userId: authorization.user.id,
+            openingAmount,
+            status: "ABIERTA",
+            notes: `Reapertura de la sesión ${lastClosed.id}`,
+          },
+        });
+        await tx.cashMovement.create({
+          data: {
+            cashSessionId: openedSession.id,
+            type: "APERTURA",
+            amount: openingAmount,
+            concept: `Reapertura de caja (sesión ${lastClosed.id})`,
           },
         });
         return openedSession;

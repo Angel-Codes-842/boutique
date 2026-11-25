@@ -1,10 +1,9 @@
 import { spawnSync } from "node:child_process";
+import { readdirSync } from "node:fs";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const prismaCli = "node_modules/.bin/prisma";
-const schemaMigration = "20261024021732_init";
-const creditMigration = "20261025000930_add_credit_and_customer_debt";
 
 function runPrisma(args) {
   const result = spawnSync(prismaCli, args, { stdio: "inherit" });
@@ -55,9 +54,16 @@ async function baselineExistingDatabase() {
     );
   }
 
-  // Keep data migrations pending so existing open cash sessions are reconciled.
-  runPrisma(["migrate", "resolve", "--applied", schemaMigration]);
-  runPrisma(["migrate", "resolve", "--applied", creditMigration]);
+  // El esquema existente ya coincide con el modelo actual: registrar TODAS
+  // las migraciones como aplicadas para que `migrate deploy` no intente
+  // recrear tablas que ya existen (evita P3005).
+  const appliedMigrations = readdirSync("prisma/migrations", { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && /^\d+_/.test(entry.name))
+    .map((entry) => entry.name)
+    .sort();
+  for (const migration of appliedMigrations) {
+    runPrisma(["migrate", "resolve", "--applied", migration]);
+  }
 }
 
 async function main() {

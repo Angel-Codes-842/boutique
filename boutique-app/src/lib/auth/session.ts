@@ -12,9 +12,8 @@ type SessionUser = {
   active: boolean;
 };
 
-export async function getSession() {
-  const cookieStore = await cookies();
-  const sessionId = await verifySessionToken(cookieStore.get("boutique_session")?.value);
+export async function getSessionFromToken(token: string | undefined) {
+  const sessionId = await verifySessionToken(token);
   if (!sessionId) return null;
 
   return prisma.user.findFirst({
@@ -23,10 +22,18 @@ export async function getSession() {
   });
 }
 
+export async function getSession() {
+  const cookieStore = await cookies();
+  return getSessionFromToken(cookieStore.get("boutique_session")?.value);
+}
+
 export async function authorizeApiRequest(
-  allowedRoles?: readonly Role[]
+  allowedRoles?: readonly Role[],
+  sessionToken?: string | null
 ): Promise<{ user: SessionUser } | { response: NextResponse }> {
-  const user = await getSession();
+  const user = sessionToken !== undefined
+    ? await getSessionFromToken(sessionToken ?? undefined)
+    : await getSession();
   if (!user) {
     return { response: NextResponse.json({ error: "No autorizado" }, { status: 401 }) };
   }

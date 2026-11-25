@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { Unlock, Lock, ArrowDownToLine, ArrowUpFromLine, FileText, X } from "lucide-react";
 import { formatGuarani } from "@/lib/utils";
@@ -13,10 +13,28 @@ interface CashSession {
   status: string;
   sales: any[];
   movements: any[];
+  historial?: CashSessionHistorial[];
+}
+
+interface CashSessionHistorial {
+  id: string;
+  openedAt: string;
+  closedAt: string | null;
+  openingAmount: number;
+  closingAmount: number | null;
+  expectedAmount: number | null;
+  difference: number | null;
+  notes: string | null;
+  status: string;
+  user: { name: string };
+  movements: Array<{ type: string; amount: number; concept: string; createdAt: string }>;
+  _count: { sales: number };
 }
 
 export default function CajaPage() {
   const [session, setSession] = useState<CashSession | null>(null);
+  const [historial, setHistorial] = useState<CashSessionHistorial[]>([]);
+  const [expandedHistorial, setExpandedHistorial] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [montoApertura, setMontoApertura] = useState("");
   const [showMovimiento, setShowMovimiento] = useState(false);
@@ -42,6 +60,7 @@ export default function CajaPage() {
       .then((r) => r.json())
       .then((data) => {
         setSession(data && data.status === "ABIERTA" ? data : null);
+        setHistorial(Array.isArray(data?.historial) ? data.historial : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -66,6 +85,25 @@ export default function CajaPage() {
       } else {
         const data = await res.json();
         toast.error(data.error || "Error al abrir caja");
+      }
+    } catch {
+      toast.error("Error de conexión");
+    }
+  };
+
+  const reabrirCaja = async () => {
+    try {
+      const res = await fetch("/api/caja", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reabrir" }),
+      });
+      if (res.ok) {
+        toast.success("Caja reabierta con el efectivo contado de la última sesión");
+        fetchSession();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Error al reabrir caja");
       }
     } catch {
       toast.error("Error de conexión");
@@ -165,6 +203,11 @@ export default function CajaPage() {
                 <button onClick={abrirCaja} className="w-full rounded-md bg-[var(--primary-600)] px-4 py-2 text-sm font-medium text-white hover:opacity-90">
                   Abrir Caja
                 </button>
+                {historial.length > 0 && (
+                  <button onClick={reabrirCaja} className="w-full rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    Reabrir última caja (₲ {formatGuarani(historial[0].closingAmount ?? historial[0].expectedAmount ?? 0)})
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -267,6 +310,86 @@ export default function CajaPage() {
             </div>
           </div>
         )}
+
+        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden mt-6">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 border-b border-slate-200">
+            <div>
+              <h2 className="font-medium text-slate-900">Historial de cajas</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Últimas {historial.length} sesiones cerradas</p>
+            </div>
+            <span className="text-xs text-slate-500">Clic en una fila para ver el detalle</span>
+          </div>
+          {historial.length === 0 ? (
+            <div className="px-6 py-8 text-center">
+              <FileText className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+              <p className="text-sm text-slate-500">Todavía no hay cajas cerradas</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[900px]">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Apertura</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Cierre</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Usuario</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Ventas</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Esperado</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Contado</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Diferencia</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Notas</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {historial.map((h) => (
+                    <Fragment key={h.id}>
+                      <tr
+                        className="cursor-pointer hover:bg-slate-50"
+                        onClick={() => setExpandedHistorial(expandedHistorial === h.id ? null : h.id)}
+                      >
+                        <td className="px-4 py-3 text-sm text-slate-600">{new Date(h.openedAt).toLocaleString("es-PY")}</td>
+                        <td className="px-4 py-3 text-sm text-slate-600">{h.closedAt ? new Date(h.closedAt).toLocaleString("es-PY") : "-"}</td>
+                        <td className="px-4 py-3 text-sm text-slate-900">{h.user?.name || "-"}</td>
+                        <td className="px-4 py-3 text-sm text-right text-slate-900">{h._count?.sales ?? 0}</td>
+                        <td className="px-4 py-3 text-sm text-right text-slate-900">{formatGuarani(h.expectedAmount ?? 0)}</td>
+                        <td className="px-4 py-3 text-sm text-right font-medium text-slate-900">{formatGuarani(h.closingAmount ?? 0)}</td>
+                        <td className={`px-4 py-3 text-sm text-right font-medium ${(h.difference ?? 0) === 0 ? "text-green-600" : "text-amber-600"}`}>
+                          {formatGuarani(h.difference ?? 0)}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-500 max-w-[220px] truncate">{h.notes || "-"}</td>
+                      </tr>
+                      {expandedHistorial === h.id && (
+                        <tr className="bg-slate-50">
+                          <td colSpan={8} className="px-6 py-4">
+                            <div className="grid gap-4 md:grid-cols-2">
+                              <div>
+                                <p className="text-xs font-medium text-slate-500 uppercase mb-2">Notas del cierre</p>
+                                <p className="text-sm text-slate-700 whitespace-pre-wrap">{h.notes || "Sin notas"}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-slate-500 uppercase mb-2">Movimientos ({h.movements?.length || 0})</p>
+                                <div className="space-y-1 max-h-48 overflow-y-auto">
+                                  {(h.movements || []).map((m, index) => (
+                                    <div key={index} className="flex justify-between gap-4 text-sm">
+                                      <span className="text-slate-600">
+                                        <span className="text-xs text-slate-400 mr-2">{new Date(m.createdAt).toLocaleTimeString("es-PY")}</span>
+                                        {m.type} · {m.concept}
+                                      </span>
+                                      <span className="font-medium text-slate-900 whitespace-nowrap">{formatGuarani(m.amount)}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
       {showMovimiento && (

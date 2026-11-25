@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authorizeApiRequest } from "@/lib/auth/session";
+import { getFactpyPublicStatus } from "@/lib/factpy/config";
 
 export async function GET() {
   try {
@@ -13,7 +14,7 @@ export async function GET() {
         data: { name: "Mi Boutique", ticketPrefix: "T", ticketNumber: 1 },
       });
     }
-    return NextResponse.json(config);
+    return NextResponse.json({ ...config, factpy: getFactpyPublicStatus() });
   } catch (error) {
     return NextResponse.json({ error: "Error al obtener configuración" }, { status: 500 });
   }

@@ -9,6 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot: debe quedar vacío
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,7 +19,7 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, website }),
       });
       if (res.ok) {
         toast.success("Sesión iniciada");
@@ -45,6 +46,17 @@ export default function LoginPage() {
             <p className="text-sm text-slate-500 mt-1">Sistema de Facturación</p>
           </div>
           <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
+            <div aria-hidden="true" className="hidden">
+              <label htmlFor="website">No completar</label>
+              <input
+                id="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Usuario</label>
               <input
