@@ -24,6 +24,7 @@ services:
     restart: "no"
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-boutique}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}@db:5432/${POSTGRES_DB:-boutique}
+      DIRECT_URL: postgresql://${POSTGRES_USER:-boutique}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}@db:5432/${POSTGRES_DB:-boutique}
     depends_on:
       db:
         condition: service_healthy
@@ -36,6 +37,7 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-boutique}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}@db:5432/${POSTGRES_DB:-boutique}
+      DIRECT_URL: postgresql://${POSTGRES_USER:-boutique}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}@db:5432/${POSTGRES_DB:-boutique}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}
       SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in the root .env file}
       NODE_ENV: production
