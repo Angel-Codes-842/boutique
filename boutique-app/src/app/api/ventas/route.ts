@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { authorizeApiRequest } from "@/lib/auth/session";
+import { emitirFacturaDeVenta } from "@/lib/factpy/service";
 
 const saleSchema = z.object({
   items: z
@@ -273,7 +274,17 @@ export async function POST(req: NextRequest) {
       return newSale;
     });
 
-    return NextResponse.json(sale, { status: 201 });
+    // La venta ya quedó confirmada: si FACTPY está activo se emite el DE y se
+    // guarda el resultado. Un fallo de facturación nunca borra la venta.
+    let facturacion: Awaited<ReturnType<typeof emitirFacturaDeVenta>> = { estado: "OMITIDO" };
+    try {
+      facturacion = await emitirFacturaDeVenta(sale.id);
+    } catch (error) {
+      console.error("Error al emitir factura electrónica:", error);
+      facturacion = { estado: "ERROR", mensaje: "No se pudo emitir el documento electrónico" };
+    }
+
+    return NextResponse.json({ ...sale, facturacion }, { status: 201 });
   } catch (error) {
     if (error instanceof StockConflictError) {
       return NextResponse.json({ error: "El stock cambió. Actualice el carrito e intente nuevamente." }, { status: 409 });

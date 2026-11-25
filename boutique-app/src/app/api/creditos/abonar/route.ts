@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { authorizeApiRequest } from "@/lib/auth/session";
+import { emitirReciboDeAbono } from "@/lib/factpy/service";
 
 const abonoSchema = z.object({
   saleId: z.string().min(1),
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Debe abrir una caja para registrar el abono" }, { status: 400 });
     }
 
-    await prisma.$transaction(async (tx) => {
+    const pago = await prisma.$transaction(async (tx) => {
       const newPaid = sale.paidAmount + abono;
       const nuevoEstado = newPaid >= sale.total ? "PAGADA" : "PENDIENTE";
 
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
         throw new Error("La deuda cambió mientras se registraba el abono.");
       }
 
-      await tx.payment.create({
+      const nuevoPago = await tx.payment.create({
         data: {
           saleId: saleId,
           method: "EFECTIVO",
@@ -81,9 +82,19 @@ export async function POST(req: NextRequest) {
           reference: saleId,
         },
       });
+
+      return nuevoPago;
     });
 
-    return NextResponse.json({ success: true });
+    let facturacion: Awaited<ReturnType<typeof emitirReciboDeAbono>> = { estado: "OMITIDO" };
+    try {
+      facturacion = await emitirReciboDeAbono(pago.id);
+    } catch (error) {
+      console.error("Error al emitir recibo electrónico:", error);
+      facturacion = { estado: "ERROR", mensaje: "No se pudo emitir el recibo electrónico" };
+    }
+
+    return NextResponse.json({ success: true, facturacion });
   } catch (error) {
     console.error("Error abono:", error);
     return NextResponse.json({ error: "Error al registrar abono" }, { status: 500 });

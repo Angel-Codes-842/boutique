@@ -18,3 +18,13 @@ services:
         sync: false
       - key: DIRECT_URL
         sync: false
+      - key: FACTPY_ENABLED
+        value: "false"
+      - key: FACTPY_API_URL
+        value: https://api.factpy.com
+      - key: FACTPY_ENVIRONMENT
+        value: test
+      - key: FACTPY_TIMEOUT_MS
+        value: "10000"
+      - key: FACTPY_RECORD_ID
+        sync: false

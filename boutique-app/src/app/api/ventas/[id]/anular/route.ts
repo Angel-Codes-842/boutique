@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth/session";
+import { procesarAnulacionVenta } from "@/lib/factpy/service";
 
 export async function POST(
   req: NextRequest,
@@ -115,7 +116,15 @@ export async function POST(
       });
     });
 
-    return NextResponse.json({ success: true });
+    let facturacion: Awaited<ReturnType<typeof procesarAnulacionVenta>> = { estado: "OMITIDO" };
+    try {
+      facturacion = await procesarAnulacionVenta(sale.id, `Anulación venta ${sale.number}`);
+    } catch (error) {
+      console.error("Error al procesar anulación electrónica:", error);
+      facturacion = { estado: "ERROR", mensaje: "No se pudo procesar el evento electrónico" };
+    }
+
+    return NextResponse.json({ success: true, facturacion });
   } catch (error) {
     console.error("Error al anular venta:", error);
     return NextResponse.json({ error: "Error al anular venta" }, { status: 500 });

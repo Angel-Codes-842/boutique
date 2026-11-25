@@ -1,8 +1,8 @@
 /**
  * Configuración de FACTPY (facturación electrónica Paraguay / SIFEN).
  *
- * IMPORTANTE: esto es solo scaffolding. La integración NO está activa.
  * El recordID es un secreto de servidor: nunca debe exponerse al cliente.
+ * La integración permanece desactivada hasta que FACTPY_ENABLED=true.
  */
 
 export type FactpyEnvironment = "test" | "production";
@@ -14,11 +14,20 @@ export interface FactpyRuntimeConfig {
   environment: FactpyEnvironment;
   timeoutMs: number;
   isConfigured: boolean;
+  endpoints: {
+    documentos: string;
+    eventos: string;
+    estados: string;
+  };
+}
+
+function normalizeBaseUrl(url: string): string {
+  return url.trim().replace(/\/+$/, "");
 }
 
 export function getFactpyConfig(): FactpyRuntimeConfig {
   const enabled = process.env.FACTPY_ENABLED === "true";
-  const apiUrl = process.env.FACTPY_API_URL?.trim() || "https://api.factpy.com";
+  const apiUrl = normalizeBaseUrl(process.env.FACTPY_API_URL || "https://api.factpy.com");
   const recordId = process.env.FACTPY_RECORD_ID?.trim() || null;
   const environment: FactpyEnvironment =
     process.env.FACTPY_ENVIRONMENT === "production" ? "production" : "test";
@@ -32,6 +41,11 @@ export function getFactpyConfig(): FactpyRuntimeConfig {
     environment,
     timeoutMs,
     isConfigured: Boolean(recordId),
+    endpoints: {
+      documentos: `${apiUrl}/facturacion-api/data.php`,
+      eventos: `${apiUrl}/facturacion-api/evento.php`,
+      estados: `${apiUrl}/facturacion-api/estadoDE.php`,
+    },
   };
 }
 
@@ -43,6 +57,25 @@ export function getFactpyPublicStatus() {
     configured: config.isConfigured,
     environment: config.environment,
     apiUrl: config.apiUrl,
-    available: false,
+    available: config.enabled && config.isConfigured,
   };
+}
+
+/** FACTPY devuelve links sin esquema (`api.factpy.com/...`). */
+export function normalizarUrlFactpy(url: string): string {
+  const valor = url.trim();
+  if (!valor) return valor;
+  return /^https?:\/\//i.test(valor) ? valor : `https://${valor}`;
+}
+
+/** Solo se permiten descargas de URLs del host configurado de FACTPY. */
+export function esUrlFactpySegura(url: string): boolean {
+  const config = getFactpyConfig();
+  try {
+    const target = new URL(normalizarUrlFactpy(url));
+    const base = new URL(config.apiUrl);
+    return target.protocol === "https:" && target.hostname === base.hostname;
+  } catch {
+    return false;
+  }
 }

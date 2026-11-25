@@ -43,6 +43,11 @@ services:
       NODE_ENV: production
       HOSTNAME: 0.0.0.0
       PORT: 3000
+      FACTPY_ENABLED: ${FACTPY_ENABLED:-false}
+      FACTPY_API_URL: ${FACTPY_API_URL:-https://api.factpy.com}
+      FACTPY_RECORD_ID: ${FACTPY_RECORD_ID:-}
+      FACTPY_ENVIRONMENT: ${FACTPY_ENVIRONMENT:-test}
+      FACTPY_TIMEOUT_MS: ${FACTPY_TIMEOUT_MS:-10000}
     ports:
       - "127.0.0.1:3000:3000"
     depends_on:

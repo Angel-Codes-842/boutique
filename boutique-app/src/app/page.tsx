@@ -1,6 +1,6 @@
 import { AppShell } from "@/components/layout/app-shell";
 import Link from "next/link";
-import { ShoppingCart, Wallet, Package, Users, FileText, Boxes } from "lucide-react";
+import { ShoppingCart, Wallet, Package, Users, FileText, Boxes, FileCheck2 } from "lucide-react";
 
 const modules = [
   { name: "Punto de Venta", href: "/pos", icon: ShoppingCart, description: "Cobrar y emitir comprobantes" },
@@ -10,6 +10,7 @@ const modules = [
   { name: "Clientes", href: "/clientes", icon: Users, description: "Agenda y RUC/CI" },
   { name: "Créditos", href: "/creditos", icon: FileText, description: "Fiados y abonos" },
   { name: "Ventas", href: "/ventas", icon: FileText, description: "Historial y reportes" },
+  { name: "Facturación", href: "/facturacion", icon: FileCheck2, description: "Documentos y eventos SIFEN" },
 ];
 
 export default function Home() {

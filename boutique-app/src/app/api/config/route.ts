@@ -41,13 +41,20 @@ export async function PUT(req: NextRequest) {
         ...(body.ticketNumber != null && Number(body.ticketNumber) > 0
           ? { ticketNumber: Number(body.ticketNumber) }
           : {}),
-        establecimiento: body.establecimiento || null,
-        puntoExpedicion: body.puntoExpedicion || null,
+        establecimiento: body.establecimiento || config.establecimiento || "001",
+        puntoExpedicion: body.puntoExpedicion || config.puntoExpedicion || "001",
         timbrado: body.timbrado || null,
         timbradoVigencia: body.timbradoVigencia ? new Date(body.timbradoVigencia) : null,
         ...(body.invoiceNumber != null && Number(body.invoiceNumber) > 0
           ? { invoiceNumber: Number(body.invoiceNumber) }
           : {}),
+        ...(body.creditoPlazoDias != null && Number(body.creditoPlazoDias) > 0
+          ? { creditoPlazoDias: Math.min(Number(body.creditoPlazoDias), 365) }
+          : {}),
+        factpyContingencia:
+          body.factpyContingencia === undefined
+            ? config.factpyContingencia
+            : Boolean(body.factpyContingencia),
       },
     });
     return NextResponse.json(updated);

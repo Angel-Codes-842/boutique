@@ -36,6 +36,38 @@ enum DocumentType {
   FACTURA
 }
 
+enum ElectronicDocumentKind {
+  FACTURA_CONTADO
+  FACTURA_CREDITO_PLAZO
+  FACTURA_CREDITO_CUOTAS
+  RECIBO
+  NOTA_CREDITO
+  AUTOFACTURA
+  NOTA_REMISION
+  ANTICIPO
+  FACTURA_EXPORTACION
+}
+
+enum ElectronicDocumentStatus {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+  ANULADO
+  INUTILIZADO
+}
+
+enum FactpyEventType {
+  CANCELACION
+  INUTILIZACION
+  NOMINACION
+}
+
+enum FactpyEventStatus {
+  PENDIENTE
+  ACEPTADO
+  RECHAZADO
+}
+
 enum MovementType {
   ENTRADA
   SALIDA
@@ -126,18 +158,22 @@ model ProductVariant {
 }
 
 model Customer {
-  id        String   @id @default(cuid())
-  name      String
-  document  String?  @unique // RUC/CI
-  phone     String?
-  email     String?
-  address   String?
-  debt      Int      @default(0) // Saldo pendiente en Guaraníes
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  document      String?  @unique // RUC/CI
+  documentType  String?  // RUC | CI | PASAPORTE | OTRO (SIFEN iTipIDRec)
+  cpais         String   @default("PRY")
+  numCasa       Int?
+  phone         String?
+  email         String?
+  address       String?
+  debt          Int      @default(0) // Saldo pendiente en Guaraníes
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  sales     Sale[]
+  sales              Sale[]
+  electronicDocuments ElectronicDocument[]
 }
 
 model Sale {
@@ -164,6 +200,7 @@ model Sale {
   cashSession   CashSession? @relation(fields: [cashSessionId], references: [id])
   items         SaleItem[]
   payments      Payment[]
+  electronicDocuments ElectronicDocument[]
 }
 
 model SaleItem {
@@ -190,6 +227,7 @@ model Payment {
   createdAt     DateTime      @default(now())
 
   sale          Sale          @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  electronicDocuments ElectronicDocument[]
 }
 
 model CashSession {
@@ -245,8 +283,89 @@ model StoreConfig {
   ticketNumber     Int       @default(1)
   establecimiento  String    @default("001")
   puntoExpedicion  String    @default("001")
+  timbrado          String?
+  timbradoVigencia  DateTime?
+  invoiceNumber     Int       @default(1)
+  creditoPlazoDias  Int       @default(30) // Plazo por defecto para factura a crédito
+  factpyContingencia Boolean  @default(false) // tipoEmision = 2 cuando SIFEN está fuera
+  updatedAt         DateTime  @updatedAt
+}
+
+/// Documento electrónico enviado (o pendiente de envío) a FACTPY / SIFEN.
+model ElectronicDocument {
+  id              String                   @id @default(cuid())
+  receiptid       String                   @unique // ID único nuestro, nunca se repite
+  kind            ElectronicDocumentKind
+  status          ElectronicDocumentStatus @default(PENDIENTE)
+  saleId          String?
+  paymentId       String?
+  customerId      String?
+  establecimiento String                   // 3 dígitos
+  punto           String                   // 3 dígitos
+  numero          String                   // 7 dígitos
+  timbrado        String?
+  fechaEmision    DateTime                 @default(now())
+  payload         Json                     // JSON exacto enviado a FACTPY (auditoría)
+  cdc             String?
+  cdcSpace        String?
+  link            String?
+  xmlLink         String?
+  kude            String?
+  code            String?
+  mensaje         String?
+  documento       String?
+  numeroTr        String?
+  intentos        Int                      @default(0)
+  ultimoError     String?
+  enviadoAt       DateTime?
+  aprobadoAt      DateTime?
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+
+  sale     Sale?     @relation(fields: [saleId], references: [id])
+  payment  Payment?  @relation(fields: [paymentId], references: [id])
+  customer Customer? @relation(fields: [customerId], references: [id])
+  events   FactpyEvent[]
+
+  @@index([status])
+  @@index([saleId])
+  @@index([customerId])
+  @@index([createdAt])
+}
+
+/// Eventos SIFEN: cancelación, inutilización y nominación.
+model FactpyEvent {
+  id               String            @id @default(cuid())
+  tipo             FactpyEventType
+  status           FactpyEventStatus @default(PENDIENTE)
+  documentId       String?
+  cdc              String?
+  tipoDoc          String?
   timbrado         String?
-  timbradoVigencia DateTime?
-  invoiceNumber    Int       @default(1)
-  updatedAt        DateTime  @updatedAt
+  establecimiento  String?
+  punto            String?
+  desde            String?
+  hasta            String?
+  motivo           String
+  nombre           String?
+  ruc              String?
+  correo           String?
+  code             String?
+  fechaRespuesta   String?
+  intentos         Int               @default(0)
+  ultimoError      String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  document ElectronicDocument? @relation(fields: [documentId], references: [id])
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+/// Correlativo por tipo de documento, establecimiento y punto de expedición.
+model DocumentSequence {
+  key        String   @id // `${kind}:${establecimiento}:${punto}`
+  nextNumber Int      @default(1)
+  updatedAt  DateTime @updatedAt
 }

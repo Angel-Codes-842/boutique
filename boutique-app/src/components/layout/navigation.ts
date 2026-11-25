@@ -8,6 +8,7 @@ import {
   FileText,
   Settings,
   BarChart3,
+  FileCheck2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -27,6 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
   { name: "Clientes", href: "/clientes", icon: Users, roles: ["ADMIN", "CAJERO", "VENDEDOR"] },
   { name: "Créditos", href: "/creditos", icon: FileText, roles: ["ADMIN", "CAJERO"] },
   { name: "Ventas", href: "/ventas", icon: FileText, roles: ["ADMIN", "CAJERO"] },
+  { name: "Facturación", href: "/facturacion", icon: FileCheck2, roles: ["ADMIN", "CAJERO"] },
   { name: "Reportes", href: "/reportes", icon: BarChart3, roles: ["ADMIN"] },
   { name: "Configuración", href: "/configuracion", icon: Settings, roles: ["ADMIN"] },
 ];
@@ -40,6 +42,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/clientes": "Clientes",
   "/creditos": "Créditos",
   "/ventas": "Ventas",
+  "/facturacion": "Facturación electrónica",
   "/reportes": "Reportes",
   "/configuracion": "Configuración",
 };

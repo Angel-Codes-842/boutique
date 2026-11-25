@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
+import Link from "next/link";
 import { Store, Receipt, Database, Save, PlugZap } from "lucide-react";
 import { Toaster, toast } from "sonner";
 
@@ -25,6 +26,8 @@ type ConfiguracionState = {
   timbrado: string;
   timbradoVigencia: string;
   invoiceNumber: number;
+  creditoPlazoDias: number;
+  factpyContingencia: boolean;
   factpy?: FactpyPublicStatus;
 };
 
@@ -41,6 +44,8 @@ export default function ConfiguracionPage() {
     timbrado: "",
     timbradoVigencia: "",
     invoiceNumber: 1,
+    creditoPlazoDias: 30,
+    factpyContingencia: false,
   });
   const [loading, setLoading] = useState(true);
 
@@ -169,6 +174,14 @@ export default function ConfiguracionPage() {
                   <label className="block text-sm font-medium text-slate-700 mb-2">Próximo N° de Factura</label>
                   <input type="number" value={config.invoiceNumber || 1} onChange={(e) => setConfig({...config, invoiceNumber: Number(e.target.value)})} className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Plazo crédito por defecto (días)</label>
+                  <input type="number" min={1} max={365} value={config.creditoPlazoDias || 30} onChange={(e) => setConfig({...config, creditoPlazoDias: Number(e.target.value)})} className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-600)]" />
+                </div>
+                <label className="flex min-h-11 items-center gap-3 text-sm text-slate-700">
+                  <input type="checkbox" checked={Boolean(config.factpyContingencia)} onChange={(e) => setConfig({...config, factpyContingencia: e.target.checked})} className="h-5 w-5" />
+                  Modo contingencia SIFEN (tipoEmision = 2)
+                </label>
               </div>
               <p className="text-xs text-slate-500">Formato de factura: {(config.establecimiento || "001")}-{(config.puntoExpedicion || "001")}-{String(config.invoiceNumber || 1).padStart(7, "0")}</p>
               {config.timbrado && <p className="text-xs text-slate-500">Timbrado N° {config.timbrado}</p>}
@@ -182,13 +195,13 @@ export default function ConfiguracionPage() {
               </div>
               <div className="min-w-0">
                 <h2 className="font-medium text-slate-900">Facturación electrónica (FACTPY)</h2>
-                <p className="text-sm text-slate-500">Preparado para SIFEN / DNIT — aún no activo</p>
+                <p className="text-sm text-slate-500">Preparado para SIFEN / DNIT — emisión desactivada por defecto</p>
               </div>
             </div>
             <div className="space-y-3 p-3 sm:p-4 lg:p-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
-                  {config.factpy?.enabled ? "Habilitado (pendiente de implementar)" : "Deshabilitado"}
+                  {config.factpy?.enabled ? "Habilitado" : "Deshabilitado"}
                 </span>
                 <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
                   {config.factpy?.available === false ? "Sin emisión disponible" : "No disponible"}
@@ -200,8 +213,13 @@ export default function ConfiguracionPage() {
                 <p><span className="font-medium">recordID:</span> {config.factpy?.configured ? "Configurado en el servidor" : "No configurado"}</p>
               </div>
               <p className="text-xs text-slate-500">
-                Los comprobantes siguen siendo manuales e internos (&ldquo;Sin valor fiscal&rdquo;).
-                La activación se hará en una etapa posterior. Ver <code>docs/FACTPY.md</code>.
+                Los módulos de documentos, eventos y control de estados ya están implementados.
+                Mientras no se active, los comprobantes internos siguen diciendo
+                &ldquo;Sin valor fiscal&rdquo;. Consultalos en{" "}
+                <Link href="/facturacion" className="font-medium text-[var(--primary-600)] underline">
+                  Facturación electrónica
+                </Link>
+                .
               </p>
             </div>
           </div>
