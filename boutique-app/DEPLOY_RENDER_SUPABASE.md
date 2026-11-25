@@ -22,6 +22,10 @@
    - Plan: Free (si está disponible)
 3. Render construye la imagen y el contenedor ejecuta, en orden:
    validación de `SESSION_SECRET` → `node prisma/migrate.mjs` → `next start`.
+4. Si el servicio quedó con **runtime Node** en vez de Docker, Render usa
+   `npm install` y `.npmrc` ya fija `legacy-peer-deps=true` para evitar el
+   `ERESOLVE` entre `vitest@5` y `@types/node@20`. Build: `npm run build`;
+   Start: `npm start`. Las migraciones ya están aplicadas en Supabase.
 
 ## 3) Variables de entorno en Render
 
