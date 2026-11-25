@@ -62,7 +62,7 @@ Cargalas para **Production** (y *Preview* si querés probar con la misma BD):
 | `DATABASE_URL` | Session pooler 5432 + `?connection_limit=1` |
 | `DIRECT_URL` | Session pooler 5432 (sin `connection_limit`) |
 | `SESSION_SECRET` | Aleatorio de ≥32 caracteres, **fijo** entre deploys |
-| `TZ` | `America/Asuncion` (para que los reportes corten el día en hora local) |
+| `TZ` | *(opcional)* `America/Asuncion`: sin esto Vercel corre en UTC y el corte de día de los reportes puede correrse unas horas |
 | `FACTPY_ENABLED` | `false` hasta tener credenciales reales |
 | `FACTPY_API_URL` | `https://api.factpy.com` |
 | `FACTPY_RECORD_ID` | Secreto del servidor, solo si FACTPY está activo |
